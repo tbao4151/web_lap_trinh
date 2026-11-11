@@ -8,7 +8,6 @@ import {
   BookOpen,
   Users,
   FileCheck2,
-  FlaskConical,
   Edit3,
   Layers,
   ExternalLink,

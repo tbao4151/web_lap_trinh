@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, TerminalSquare, ArrowUpRight, Filter } from 'lucide-react';
+import { Search, TerminalSquare, ArrowUpRight } from 'lucide-react';
 import { DOMAINS, ROUTES } from '@/config/brand';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';

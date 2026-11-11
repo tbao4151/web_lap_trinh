@@ -4,7 +4,6 @@ import React from 'react';
 import Link from 'next/link';
 import {
   Play,
-  BookOpen,
   TerminalSquare,
   CheckCircle2,
   ArrowRight,

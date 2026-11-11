@@ -1,23 +1,64 @@
-# AlgoAcademy — web_lap_trinh
+# AlgoAcademy (`web_lap_trinh`)
 
-Nền tảng học lập trình và công nghệ thông tin đa trình độ: C, C++, Python, Java, thuật toán, HSG Tin học và các lĩnh vực mở rộng.
+**AlgoAcademy** là nền tảng học tập đa trình độ và đa mảng kiến thức về Lập trình (C, C++, Python, Java), Cấu trúc dữ liệu & Thuật toán / Bồi dưỡng Học sinh giỏi, Công nghệ phần mềm (Git/GitHub) và Cơ sở dữ liệu & Hệ thống (SQL).
 
-**Trạng thái:** Khởi tạo tài liệu và hướng dẫn agent cho giai đoạn thiết kế UI/UX. **Chưa có frontend ứng dụng, backend hoặc các dịch vụ thật.**
+> **Lưu ý phạm vi (UI/UX Stage):** Dự án hiện tại là **bản trình diễn giao diện người dùng (Production-Grade Frontend / UI Demo)** sử dụng dữ liệu mẫu chuẩn kiểu (typed mock seed data) và lưu trữ trạng thái trên trình duyệt (`localStorage`). Chưa kết nối máy chấm code (Judge Worker), cơ sở dữ liệu máy chủ hay cổng thanh toán thật.
 
-## Hướng dẫn làm việc với Gemini Antigravity
+---
 
-1. Clone repository này về máy và mở thư mục trong Antigravity.
-2. Đặt file đặc tả đầy đủ `ANTIGRAVITY_UI_BRIEF.md` (được bàn giao riêng) tại thư mục gốc rồi commit. Đây là tài liệu sản phẩm chính.
-3. Đọc `AGENTS.md`, `docs/AGENT_SKILLS_SETUP.md` và `.agents/skills/edtech-ui-standards/SKILL.md`.
-4. Cài đặt chọn lọc các UI skills theo tài liệu setup (chọn project scope).
-5. Triển khai thiết kế và frontend theo milestone trong brief; sử dụng dữ liệu mock, tương tác demo rõ ràng.
-6. Trước khi đánh dấu hoàn thành: kiểm tra responsive, accessibility, lint, typecheck và build.
+## Tính năng nổi bật
 
-## Repo
+1. **4 Không gian Vai trò (Role Switcher toàn cục):**
+   - **Khách tham quan (`guest`):** Khám phá lộ trình theo mục tiêu, danh mục khóa học, kho bài tập công khai, dùng thử trực tiếp bộ mô phỏng Quy hoạch động (DP Visualizer) ngay trên trang chủ.
+   - **Học viên (`learner`):** Trình học tương tác 10 loại khối nội dung (RichText, Code đa ngôn ngữ, Callout, Quiz, Interactive DP Visualizer, Problem Reference, Slide, Video, Diagram, Teacher Note ẩn với học viên), chế độ Tập trung (Focus Mode), Sổ tay ghi chú, Bản đồ năng lực đa trục và phòng thực hành Coding Lab.
+   - **Giảng viên (`teacher`):** Teaching Studio với trình dựng cấu trúc khóa học (Course Outline Builder), trình soạn thảo khối bài giảng (Lesson Block Editor), chế độ Xem trước góc nhìn Học viên / Giảng viên, Ngân hàng bài tập theo Subtask, Sổ theo dõi lớp học và Không gian nghiên cứu chuyên đề.
+   - **Quản trị viên (`admin`):** Quản lý người dùng & phân vai, kiểm duyệt trạng thái xuất bản học liệu, nhật ký mở khóa Demo và cấu hình phân loại đa mảng kiến thức.
 
-- [Hướng dẫn cho agent](AGENTS.md)
-- [Cách cài skill UI/UX](docs/AGENT_SKILLS_SETUP.md)
-- [Skill EdTech UI của dự án](.agents/skills/edtech-ui-standards/SKILL.md)
-- [Tài liệu Antigravity Skills chính thức](https://antigravity.google/docs/skills)
+2. **Tương tác có trạng thái lưu trữ (`localStorage`):**
+   - Lưu tiến độ hoàn thành bài học, đánh dấu bài học, ghi chú cá nhân và câu trả lời Quiz.
+   - Lưu nháp mã nguồn riêng biệt theo từng cặp `Bài tập + Ngôn ngữ (C / C++ / Python / Java)`.
+   - Lưu thay đổi khi Giảng viên thêm/sửa/xóa/sắp xếp Học phần, Bài học, Khối nội dung (Blocks) hoặc chuyển ghi chép nghiên cứu thành bản nháp bài giảng.
+   - Hỗ trợ nút **Khôi phục dữ liệu mẫu gốc (Reset Demo)** bất kỳ lúc nào.
 
-Các agent skills bên ngoài chưa được tự động sao chép vào repository. Hãy kiểm tra nội dung, giấy phép và script trước khi cài; tránh commit dữ liệu người học, API keys, hoặc thông tin bí mật.
+---
+
+## Công nghệ sử dụng
+
+- **Framework:** Next.js 15 (App Router)
+- **Ngôn ngữ:** TypeScript (`strict: true`)
+- **Styling:** Tailwind CSS v4 + CSS Design Tokens (`Plus Jakarta Sans` & `JetBrains Mono`)
+- **Icons:** `lucide-react`
+
+---
+
+## Hướng dẫn cài đặt và chạy dự án
+
+```bash
+# 1. Cài đặt dependencies
+npm install
+
+# 2. Chạy môi trường phát triển (Development Server)
+npm run dev
+
+# 3. Kiểm tra kiểu TypeScript
+npm run typecheck
+
+# 4. Kiểm tra ESLint
+npm run lint
+
+# 5. Build bản Production
+npm run build
+```
+
+---
+
+## Cấu trúc thư mục chính
+
+- `src/config/brand.ts` — Cấu hình thương hiệu tập trung, routes, taxonomy đa mảng kiến thức và metadata ngôn ngữ/độ khó.
+- `src/types/index.ts` — Toàn bộ định nghĩa kiểu dữ liệu nghiêm ngặt (Course, LessonBlock, Problem, Submission, SkillCompetency, Classroom, Contest, ResearchNote...).
+- `src/data/` — Bộ dữ liệu mẫu (8 khóa học, bài giảng đầy đủ 10 loại Block, 12 bài tập đa ngôn ngữ, 8 bài nộp mẫu, 4 lộ trình, lớp học, cuộc thi).
+- `src/services/index.ts` — Lớp dịch vụ truy vấn và lọc dữ liệu đồng bộ.
+- `src/providers/AppStateProvider.tsx` — Quản lý trạng thái toàn cục, đồng bộ `localStorage`, thông báo Toast và chuyển đổi giao diện Sáng/Tối.
+- `src/components/` — Hệ thống thành phần giao diện tái sử dụng (`WorkspaceShell`, `PublicHeader`, `RoleSwitcherBar`, `DPVisualizer`, `LessonBlockRenderer`...).
+- `src/app/` — Hệ thống 32 routes đầy đủ thuộc các Milestone A, B, C, D, E, F.
+- `docs/` — Tài liệu quyết định thiết kế (`UI_DECISIONS.md`) và báo cáo trạng thái triển khai (`UI_IMPLEMENTATION_STATUS.md`).

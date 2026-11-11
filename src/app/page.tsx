@@ -5,11 +5,7 @@ import Link from 'next/link';
 import {
   ArrowRight,
   BookOpen,
-  Code2,
-  Cpu,
-  Layers,
   Play,
-  Sparkles,
   CheckCircle2,
   TerminalSquare,
   SlidersHorizontal,
