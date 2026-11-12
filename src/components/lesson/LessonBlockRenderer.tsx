@@ -320,7 +320,7 @@ function SlideBlockView({ data }: { data: SlideBlockData }) {
   return (
     <div
       className={`my-6 rounded-2xl border border-slate-200 bg-slate-900 text-white shadow-md dark:border-slate-800 ${
-        expanded ? 'fixed inset-4 z-50 flex flex-col justify-between p-8' : 'p-6'
+        expanded ? 'fixed inset-2 z-50 flex flex-col overflow-y-auto p-4 sm:inset-4 sm:p-8' : 'p-4 sm:p-6'
       }`}
     >
       <div className="flex items-center justify-between border-b border-slate-800 pb-3">
@@ -370,7 +370,7 @@ function SlideBlockView({ data }: { data: SlideBlockData }) {
         ) : null}
       </div>
 
-      <div className="flex items-center justify-between border-t border-slate-800 pt-3">
+      <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t border-slate-800 pt-3">
         <button
           type="button"
           disabled={idx === 0}
@@ -380,13 +380,14 @@ function SlideBlockView({ data }: { data: SlideBlockData }) {
           <ChevronLeft className="h-4 w-4" aria-hidden="true" />
           <span>Slide trước</span>
         </button>
-        <div className="flex items-center gap-1.5">
+        <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5">
           {slides.map((_, sIdx) => (
             <button
               key={sIdx}
               type="button"
               onClick={() => setIdx(sIdx)}
               aria-label={`Chuyển tới slide ${sIdx + 1}`}
+              aria-current={sIdx === idx ? 'step' : undefined}
               className={`h-2 rounded-full transition cursor-pointer ${
                 sIdx === idx ? 'w-6 bg-indigo-500' : 'w-2 bg-slate-700'
               }`}
