@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -83,6 +83,40 @@ export function WorkspaceShell({
   const { state } = useAppState();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
+  const mobileMenuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
+  const mobileCloseButtonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!mobileDrawerOpen) return;
+
+    mobileCloseButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setMobileDrawerOpen(false);
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = mobileDrawerRef.current?.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled])',
+      );
+      if (!focusable?.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('keydown', onKeyDown);
+      mobileMenuButtonRef.current?.focus();
+    };
+  }, [mobileDrawerOpen]);
 
   const navItems =
     surface === 'teacher' ? TEACHER_NAV : surface === 'admin' ? ADMIN_NAV : LEARNER_NAV;
@@ -181,8 +215,11 @@ export function WorkspaceShell({
           <div className="flex items-center gap-3">
             <button
               type="button"
+              ref={mobileMenuButtonRef}
               onClick={() => setMobileDrawerOpen(true)}
               aria-label="Mở menu điều hướng"
+              aria-haspopup="dialog"
+              aria-expanded={mobileDrawerOpen}
               className="rounded-lg border border-slate-200 p-2 text-slate-600 hover:bg-slate-100 md:hidden dark:border-slate-700 dark:text-slate-300 cursor-pointer"
             >
               <Menu className="h-5 w-5" aria-hidden="true" />
@@ -211,6 +248,7 @@ export function WorkspaceShell({
         {/* Mobile Sidebar Drawer */}
         {mobileDrawerOpen ? (
           <div
+            ref={mobileDrawerRef}
             className="fixed inset-0 z-50 flex md:hidden"
             role="dialog"
             aria-modal="true"
@@ -232,6 +270,7 @@ export function WorkspaceShell({
                 </div>
                 <button
                   type="button"
+                  ref={mobileCloseButtonRef}
                   onClick={() => setMobileDrawerOpen(false)}
                   aria-label="Đóng menu"
                   className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
