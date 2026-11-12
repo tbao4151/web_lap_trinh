@@ -49,6 +49,16 @@ export default function LessonPlayerPage({
 
   const course = courseService.getBySlug(state, courseSlug);
   const lesson = lessonService.get(state, lessonSlug);
+  // A lesson URL must resolve inside the requested course. Otherwise an
+  // unrelated course's demo entitlement could grant access to this lesson.
+  const lessonBelongsToCourse = Boolean(
+    course &&
+    lesson &&
+    lesson.courseId === course.id &&
+    course.modules.some((module) =>
+      module.lessons.some((item) => item.slug === lesson.slug)
+    )
+  );
 
   const existingNote = state.notes.find((n) => n.lessonSlug === lessonSlug);
 
@@ -56,7 +66,7 @@ export default function LessonPlayerPage({
     setNoteDraft(existingNote?.content ?? '');
   }, [existingNote?.content, lessonSlug]);
 
-  if (!course || !lesson) {
+  if (!course || !lesson || !lessonBelongsToCourse) {
     return (
       <main id="main-content" className="mx-auto max-w-4xl px-4 py-16">
         <EmptyState
