@@ -451,14 +451,18 @@ function QuizBlockView({ blockId, data }: { blockId: string; data: QuizBlockData
           }
 
           return (
-            <button
+            <label
               key={opt.id}
-              type="button"
-              role="radio"
-              aria-checked={checked}
-              onClick={() => saveQuizAnswer(blockId, opt.id)}
-              className={`flex w-full items-start gap-3 rounded-xl border p-3.5 text-left text-sm transition cursor-pointer ${borderClass}`}
+              className={`flex w-full items-start gap-3 rounded-xl border p-3.5 text-left text-sm transition cursor-pointer focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2 dark:focus-within:ring-offset-slate-900 ${borderClass}`}
             >
+              <input
+                type="radio"
+                name={`quiz-${blockId}`}
+                value={opt.id}
+                checked={checked}
+                onChange={() => saveQuizAnswer(blockId, opt.id)}
+                className="sr-only"
+              />
               <span
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border text-xs font-bold ${
                   checked
@@ -471,7 +475,7 @@ function QuizBlockView({ blockId, data }: { blockId: string; data: QuizBlockData
                 {checked ? '✓' : ''}
               </span>
               <span className="font-medium text-slate-800 dark:text-slate-100">{opt.text}</span>
-            </button>
+            </label>
           );
         })}
       </div>
