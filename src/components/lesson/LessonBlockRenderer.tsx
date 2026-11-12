@@ -70,13 +70,13 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1" role="tablist" aria-label="Ngôn ngữ mã nguồn">
+          <div className="flex items-center gap-1" role="group" aria-label="Ngôn ngữ mã nguồn">
             {availableLangs.map((lang) => (
               <button
                 key={lang}
                 type="button"
-                role="tab"
-                aria-selected={selectedLang === lang}
+                aria-pressed={selectedLang === lang}
+                aria-label={`Ngôn ngữ ${LANGUAGE_META[lang].label}`}
                 onClick={() => setSelectedLang(lang)}
                 className={`rounded-md px-2.5 py-1 font-mono text-xs font-medium transition cursor-pointer ${
                   selectedLang === lang
