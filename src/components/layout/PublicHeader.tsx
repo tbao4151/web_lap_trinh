@@ -104,7 +104,8 @@ export function PublicHeader() {
           type="button"
           onClick={() => setMobileOpen((v) => !v)}
           aria-expanded={mobileOpen}
-          aria-label="Mở menu điều hướng"
+          aria-label={mobileOpen ? "Đóng menu điều hướng" : "Mở menu điều hướng"}
+          aria-controls="public-mobile-navigation"
           className="inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 md:hidden dark:text-slate-300 dark:hover:bg-slate-800 cursor-pointer"
         >
           {mobileOpen ? (
@@ -116,7 +117,7 @@ export function PublicHeader() {
       </div>
 
       {mobileOpen ? (
-        <div className="border-t border-slate-200 bg-white px-4 pt-3 pb-5 md:hidden dark:border-slate-800 dark:bg-slate-900">
+        <div id="public-mobile-navigation" className="border-t border-slate-200 bg-white px-4 pt-3 pb-5 md:hidden dark:border-slate-800 dark:bg-slate-900">
           <div className="flex flex-col gap-1">
             {navItems.map((item) => {
               const Icon = item.icon;
