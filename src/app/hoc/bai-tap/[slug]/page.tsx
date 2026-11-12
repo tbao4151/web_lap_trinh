@@ -583,6 +583,7 @@ export default function CodingLabPage({
                 ))}
               </div>
 
+              <p id="code-editor-keyboard-help" className="sr-only">Nhấn Tab để thụt đầu dòng; nhấn Shift cộng Tab để chuyển tiêu điểm về điều khiển trước đó.</p>
               <label htmlFor="code-editor-textarea" className="sr-only">
                 Soạn thảo mã nguồn {LANGUAGE_META[language].label}
               </label>
@@ -591,7 +592,7 @@ export default function CodingLabPage({
                 value={code}
                 onChange={(e) => handleCodeChange(e.target.value)}
                 onKeyDown={(e) => {
-                  if (e.key === 'Tab') {
+                  if (e.key === 'Tab' && !e.shiftKey) {
                     e.preventDefault();
                     const start = e.currentTarget.selectionStart;
                     const end = e.currentTarget.selectionEnd;
@@ -608,6 +609,7 @@ export default function CodingLabPage({
                   }
                 }}
                 spellCheck={false}
+                aria-describedby="code-editor-keyboard-help"
                 className="w-full flex-1 resize-none bg-slate-950 p-4 font-mono leading-6 text-slate-100 focus:outline-none"
               />
             </div>
