@@ -128,6 +128,7 @@ export default function CodingLabPage({
   const handleResetConfirm = () => {
     resetCodeDraft(problem.slug, language);
     setCode(problem.starterCode[language] ?? '');
+    setConfirmResetOpen(false);
     showToast('Đã khôi phục mã nguồn mẫu ban đầu', undefined, 'info');
   };
 
@@ -421,6 +422,8 @@ export default function CodingLabPage({
                           type="button"
                           onClick={() => {
                             setCustomInput(sample.input);
+                            // On mobile the input panel is a separate view.
+                            setMobileTab('result');
                             showToast(
                               `Đã nạp Input Ví dụ #${idx + 1} vào ô Custom Input`,
                               undefined,
