@@ -583,6 +583,14 @@ export default function CodingLabPage({
                     const end = e.currentTarget.selectionEnd;
                     const updated = code.substring(0, start) + '    ' + code.substring(end);
                     handleCodeChange(updated);
+                    // Restore the caret after React updates the controlled textarea.
+                    const editor = e.currentTarget;
+                    const nextCaret = start + 4;
+                    requestAnimationFrame(() => {
+                      if (editor.isConnected) {
+                        editor.setSelectionRange(nextCaret, nextCaret);
+                      }
+                    });
                   }
                 }}
                 spellCheck={false}
@@ -655,8 +663,13 @@ export default function CodingLabPage({
                   </p>
                 )}
 
-                <div className="mt-2.5 flex flex-wrap gap-2">
-                  {displaySubmissions.map((sub) => (
+                {displaySubmissions.length === 0 ? (
+                  <p className="mt-2.5 rounded-lg border border-dashed border-slate-300 p-3 text-xs text-slate-600 dark:border-slate-700 dark:text-slate-300" role="status">
+                    Bài tập này chưa có bản ghi chấm mẫu. Hệ thống chưa kết nối máy chấm thật nên chưa thể hiển thị kết quả chạy hoặc nộp bài.
+                  </p>
+                ) : (
+                  <div className="mt-2.5 flex flex-wrap gap-2">
+                    {displaySubmissions.map((sub) => (
                     <Link
                       key={sub.id}
                       href={ROUTES.submissionDetail(sub.id)}
@@ -667,8 +680,9 @@ export default function CodingLabPage({
                         ({LANGUAGE_META[sub.language].shortLabel}) →
                       </span>
                     </Link>
-                  ))}
-                </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
