@@ -261,7 +261,7 @@ export default function CodingLabPage({
       {/* Mobile View Switcher Tabs */}
       <div
         className="flex border-b border-slate-200 bg-white px-4 lg:hidden dark:border-slate-800 dark:bg-slate-900"
-        role="tablist"
+        role="group"
         aria-label="Chuyển vùng làm việc trên di động"
       >
         {(
@@ -274,8 +274,7 @@ export default function CodingLabPage({
           <button
             key={t.id}
             type="button"
-            role="tab"
-            aria-selected={mobileTab === t.id}
+            aria-pressed={mobileTab === t.id}
             onClick={() => setMobileTab(t.id)}
             className={`flex-1 border-b-2 py-2.5 text-xs font-bold transition cursor-pointer ${
               mobileTab === t.id
@@ -301,7 +300,7 @@ export default function CodingLabPage({
         >
           {/* Subtabs inside Problem Pane */}
           <div className="flex items-center justify-between border-b border-slate-200 px-5 pt-3 dark:border-slate-800">
-            <div className="flex items-center gap-4" role="tablist">
+            <div className="flex items-center gap-4" role="group" aria-label="Chọn nội dung đề bài">
               {(
                 [
                   { id: 'statement', label: 'Đề bài & Ví dụ' },
@@ -312,8 +311,7 @@ export default function CodingLabPage({
                 <button
                   key={tab.id}
                   type="button"
-                  role="tab"
-                  aria-selected={leftTab === tab.id}
+                  aria-pressed={leftTab === tab.id}
                   onClick={() => setLeftTab(tab.id)}
                   className={`border-b-2 pb-3 text-xs font-bold transition cursor-pointer ${
                     leftTab === tab.id
