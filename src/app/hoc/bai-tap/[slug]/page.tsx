@@ -85,10 +85,9 @@ export default function CodingLabPage({
     );
   }
 
-  const sampleSubmissions = problemService.getSampleSubmissions(state, problem.slug);
-  const allSeededSubmissions = state.submissions.slice(0, 5);
-  const displaySubmissions =
-    sampleSubmissions.length > 0 ? sampleSubmissions : allSeededSubmissions;
+  // Only display demo submissions belonging to the current problem. Showing
+  // unrelated seed records misrepresents the result and confuses learners.
+  const displaySubmissions = problemService.getSampleSubmissions(state, problem.slug);
 
   const lineCount = Math.max(12, code.split('\n').length);
 
@@ -469,6 +468,11 @@ export default function CodingLabPage({
                 <p className="text-xs text-slate-600 dark:text-slate-300">
                   Các bản ghi chấm mẫu (Seeded Submissions) dưới đây minh họa đầy đủ các trạng thái chấm (AC, WA, TLE, CE, RE) để kiểm thử giao diện.
                 </p>
+                {displaySubmissions.length === 0 && (
+                  <p role="status" className="rounded-lg border border-dashed border-slate-300 p-4 text-sm text-slate-600 dark:border-slate-700 dark:text-slate-300">
+                    Chưa có bản ghi chấm mẫu cho bài tập này. Chế độ demo không tạo kết quả chấm thật.
+                  </p>
+                )}
                 {displaySubmissions.map((sub) => (
                   <div
                     key={sub.id}
