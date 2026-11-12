@@ -49,6 +49,7 @@ export default function CodingLabPage({
   const [code, setCode] = useState<string>('');
   const [customInput, setCustomInput] = useState<string>('');
   const initializedInputForProblem = useRef<string | null>(null);
+  const feedbackScopeRef = useRef<string | null>(null);
   const [mobileTab, setMobileTab] = useState<'statement' | 'code' | 'result'>('statement');
   const [leftTab, setLeftTab] = useState<'statement' | 'hints' | 'submissions'>('statement');
   const [wideEditor, setWideEditor] = useState(false);
@@ -70,8 +71,15 @@ export default function CodingLabPage({
     const starter = problem.starterCode[language] ?? '';
     const loaded = getCodeDraft(problem.slug, language, starter);
     setCode(loaded);
-    setCopied(false);
-    setJudgeNotice(null);
+    // Updating a draft changes getCodeDraft's identity. Only changing the
+    // problem/language should clear feedback; saving or simulating must not
+    // erase the just-created demo result on the next effect run.
+    const feedbackScope = `${problem.slug}::${language}`;
+    if (feedbackScopeRef.current !== feedbackScope) {
+      feedbackScopeRef.current = feedbackScope;
+      setCopied(false);
+      setJudgeNotice(null);
+    }
   }, [problem, language, getCodeDraft]);
 
   useEffect(() => {
