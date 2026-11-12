@@ -50,6 +50,7 @@ export default function CodingLabPage({
   const [customInput, setCustomInput] = useState<string>('');
   const initializedInputForProblem = useRef<string | null>(null);
   const feedbackScopeRef = useRef<string | null>(null);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [mobileTab, setMobileTab] = useState<'statement' | 'code' | 'result'>('statement');
   const [leftTab, setLeftTab] = useState<'statement' | 'hints' | 'submissions'>('statement');
   const [wideEditor, setWideEditor] = useState(false);
@@ -59,6 +60,10 @@ export default function CodingLabPage({
     actionType: 'run' | 'submit';
     message: string;
   } | null>(null);
+
+  useEffect(() => () => {
+    if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
+  }, []);
 
   useEffect(() => {
     if (!problem) return;
@@ -109,11 +114,19 @@ export default function CodingLabPage({
 
   const lineCount = Math.max(12, code.split('\n').length);
 
+  const clearCopyFeedback = () => {
+    if (copyTimeoutRef.current !== null) {
+      clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = null;
+    }
+    setCopied(false);
+  };
+
   const handleLanguageSwitch = (nextLang: ProgrammingLanguage) => {
     if (nextLang === language || !problem.supportedLanguages.includes(nextLang)) return;
     // Save current language draft automatically before switching so no work is ever lost
     saveCodeDraft(problem.slug, language, code);
-    setCopied(false);
+    clearCopyFeedback();
     setJudgeNotice(null);
     setLanguage(nextLang);
     showToast(
@@ -125,7 +138,7 @@ export default function CodingLabPage({
 
   const handleCodeChange = (nextCode: string) => {
     setCode(nextCode);
-    setCopied(false);
+    clearCopyFeedback();
     setJudgeNotice(null);
     saveCodeDraft(problem.slug, language, nextCode);
   };
@@ -142,7 +155,7 @@ export default function CodingLabPage({
   const handleResetConfirm = () => {
     resetCodeDraft(problem.slug, language);
     setCode(problem.starterCode[language] ?? '');
-    setCopied(false);
+    clearCopyFeedback();
     setJudgeNotice(null);
     setConfirmResetOpen(false);
     showToast('Đã khôi phục mã nguồn mẫu ban đầu', undefined, 'info');
@@ -166,12 +179,16 @@ export default function CodingLabPage({
   };
 
   const handleCopyCode = async () => {
+    clearCopyFeedback();
     try {
       await navigator.clipboard.writeText(code);
       setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      copyTimeoutRef.current = setTimeout(() => {
+        setCopied(false);
+        copyTimeoutRef.current = null;
+      }, 2000);
     } catch {
-      setCopied(false);
+      clearCopyFeedback();
       showToast(
         'Không thể sao chép mã nguồn',
         'Trình duyệt chưa cấp quyền clipboard. Hãy chọn và sao chép mã thủ công.',
