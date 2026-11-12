@@ -43,17 +43,16 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
       ? data.defaultLanguage
       : availableLangs[0] ?? 'cpp'
   );
-  const [copied, setCopied] = useState(false);
+  const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
 
   const code = data.snippets[selectedLang] ?? '';
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(code);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      setCopyStatus('copied');
     } catch {
-      // Ignore clipboard error
+      setCopyStatus('error');
     }
   };
 
@@ -77,7 +76,10 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
                 type="button"
                 aria-pressed={selectedLang === lang}
                 aria-label={`Ngôn ngữ ${LANGUAGE_META[lang].label}`}
-                onClick={() => setSelectedLang(lang)}
+                onClick={() => {
+                  setSelectedLang(lang);
+                  setCopyStatus('idle');
+                }}
                 className={`rounded-md px-2.5 py-1 font-mono text-xs font-medium transition cursor-pointer ${
                   selectedLang === lang
                     ? 'bg-indigo-600 text-white'
@@ -94,7 +96,7 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
             onClick={handleCopy}
             className="inline-flex items-center gap-1 rounded-md border border-slate-700 bg-slate-800 px-2.5 py-1 text-xs font-medium text-slate-200 hover:bg-slate-700 cursor-pointer"
           >
-            {copied ? (
+            {copyStatus === 'copied' ? (
               <>
                 <Check className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
                 <span>Đã chép</span>
@@ -108,6 +110,11 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
           </button>
         </div>
       </div>
+      {copyStatus === 'error' ? (
+        <p role="alert" className="px-4 py-2 text-xs text-amber-300">
+          Không thể sao chép tự động. Hãy chọn và sao chép mã nguồn thủ công.
+        </p>
+      ) : null}
 
       <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed sm:text-sm">
         <code>{code}</code>
