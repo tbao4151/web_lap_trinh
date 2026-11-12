@@ -142,10 +142,7 @@ export function ConfirmDialog({
           </button>
           <button
             type="button"
-            onClick={() => {
-              onConfirm();
-              onCancel();
-            }}
+            onClick={onConfirm}
             className={`rounded-lg px-4 py-2 text-sm font-semibold text-white cursor-pointer ${
               variant === 'danger'
                 ? 'bg-rose-600 hover:bg-rose-700'
