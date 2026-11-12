@@ -70,6 +70,8 @@ export default function CodingLabPage({
     const starter = problem.starterCode[language] ?? '';
     const loaded = getCodeDraft(problem.slug, language, starter);
     setCode(loaded);
+    setCopied(false);
+    setJudgeNotice(null);
   }, [problem, language, getCodeDraft]);
 
   useEffect(() => {
@@ -103,6 +105,8 @@ export default function CodingLabPage({
     if (nextLang === language || !problem.supportedLanguages.includes(nextLang)) return;
     // Save current language draft automatically before switching so no work is ever lost
     saveCodeDraft(problem.slug, language, code);
+    setCopied(false);
+    setJudgeNotice(null);
     setLanguage(nextLang);
     showToast(
       `Đã chuyển sang ${LANGUAGE_META[nextLang].label}`,
@@ -113,6 +117,8 @@ export default function CodingLabPage({
 
   const handleCodeChange = (nextCode: string) => {
     setCode(nextCode);
+    setCopied(false);
+    setJudgeNotice(null);
     saveCodeDraft(problem.slug, language, nextCode);
   };
 
@@ -128,6 +134,8 @@ export default function CodingLabPage({
   const handleResetConfirm = () => {
     resetCodeDraft(problem.slug, language);
     setCode(problem.starterCode[language] ?? '');
+    setCopied(false);
+    setJudgeNotice(null);
     setConfirmResetOpen(false);
     showToast('Đã khôi phục mã nguồn mẫu ban đầu', undefined, 'info');
   };
