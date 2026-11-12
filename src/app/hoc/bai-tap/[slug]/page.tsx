@@ -199,7 +199,7 @@ export default function CodingLabPage({
                 onClick={() => handleLanguageSwitch(lang)}
                 aria-pressed={language === lang}
                 aria-label={`Ngôn ngữ ${LANGUAGE_META[lang].label}`}
-                className={``rounded-lg px-2.5 py-1 font-mono text-xs font-semibold transition cursor-pointer ${
+                className={`rounded-lg px-2.5 py-1 font-mono text-xs font-semibold transition cursor-pointer ${
                   language === lang
                     ? 'bg-indigo-600 text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
