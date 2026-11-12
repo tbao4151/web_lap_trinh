@@ -154,7 +154,12 @@ export default function CodingLabPage({
       setCopied(true);
       window.setTimeout(() => setCopied(false), 2000);
     } catch {
-      // Ignore
+      setCopied(false);
+      showToast(
+        'Không thể sao chép mã nguồn',
+        'Trình duyệt chưa cấp quyền clipboard. Hãy chọn và sao chép mã thủ công.',
+        'warning'
+      );
     }
   };
 
@@ -367,7 +372,7 @@ export default function CodingLabPage({
                 {/* Constraints & Subtasks */}
                 <div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    Ràng buộc dữ liệu & Phân점 Subtasks
+                    Ràng buộc dữ liệu & Phân điểm Subtasks
                   </h3>
                   <ul className="mt-2 flex flex-wrap gap-2">
                     {problem.constraints.map((c) => (
