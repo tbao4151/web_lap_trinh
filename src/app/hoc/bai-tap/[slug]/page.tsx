@@ -61,6 +61,12 @@ export default function CodingLabPage({
 
   useEffect(() => {
     if (!problem) return;
+    // Some exercises support only a subset of languages. Never display an
+    // unsupported language or load an unrelated starter template.
+    if (!problem.supportedLanguages.includes(language)) {
+      setLanguage(problem.supportedLanguages[0]);
+      return;
+    }
     const starter = problem.starterCode[language] ?? '';
     const loaded = getCodeDraft(problem.slug, language, starter);
     setCode(loaded);
@@ -94,6 +100,7 @@ export default function CodingLabPage({
   const lineCount = Math.max(12, code.split('\n').length);
 
   const handleLanguageSwitch = (nextLang: ProgrammingLanguage) => {
+    if (nextLang === language || !problem.supportedLanguages.includes(nextLang)) return;
     // Save current language draft automatically before switching so no work is ever lost
     saveCodeDraft(problem.slug, language, code);
     setLanguage(nextLang);
@@ -185,7 +192,9 @@ export default function CodingLabPage({
                 key={lang}
                 type="button"
                 onClick={() => handleLanguageSwitch(lang)}
-                className={`rounded-lg px-2.5 py-1 font-mono text-xs font-semibold transition cursor-pointer ${
+                aria-pressed={language === lang}
+                aria-label={`Ngôn ngữ ${LANGUAGE_META[lang].label}`}
+                className={``rounded-lg px-2.5 py-1 font-mono text-xs font-semibold transition cursor-pointer ${
                   language === lang
                     ? 'bg-indigo-600 text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white'
