@@ -1,6 +1,6 @@
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { use, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -48,6 +48,7 @@ export default function CodingLabPage({
   const [language, setLanguage] = useState<ProgrammingLanguage>('cpp');
   const [code, setCode] = useState<string>('');
   const [customInput, setCustomInput] = useState<string>('');
+  const initializedInputForProblem = useRef<string | null>(null);
   const [mobileTab, setMobileTab] = useState<'statement' | 'code' | 'result'>('statement');
   const [leftTab, setLeftTab] = useState<'statement' | 'hints' | 'submissions'>('statement');
   const [wideEditor, setWideEditor] = useState(false);
@@ -66,11 +67,12 @@ export default function CodingLabPage({
   }, [problem, language, getCodeDraft]);
 
   useEffect(() => {
-    if (!problem) return;
-    if (problem.samples[0] && !customInput) {
-      setCustomInput(problem.samples[0].input);
-    }
-  }, [problem, customInput]);
+    if (!problem || initializedInputForProblem.current === problem.slug) return;
+    // Initialize once per problem, not whenever the input is empty. An empty
+    // stdin is valid and must remain editable for manual test scenarios.
+    initializedInputForProblem.current = problem.slug;
+    setCustomInput(problem.samples[0]?.input ?? '');
+  }, [problem]);
 
   if (!problem) {
     return (
