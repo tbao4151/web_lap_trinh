@@ -90,6 +90,7 @@ export default function CourseBuilderPage({
     };
     setDraft(nextCourse);
     updateCourse(nextCourse);
+    setPublishConfirmOpen(false);
   };
 
   const handleAddModule = () => {
