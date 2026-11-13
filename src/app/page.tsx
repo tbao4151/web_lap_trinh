@@ -139,8 +139,8 @@ export default function HomePage() {
               </div>
 
               {/* Custom Interactive Studio Window Preview */}
-              <div className="lg:col-span-6">
-                <div className="rounded-2xl border border-slate-200 bg-slate-950 p-4 text-slate-100 shadow-xl dark:border-slate-800">
+              <div className="min-w-0 lg:col-span-6">
+                <div className="min-w-0 rounded-2xl border border-slate-200 bg-slate-950 p-4 text-slate-100 shadow-xl dark:border-slate-800">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
                     <div className="flex items-center gap-2">
                       <span className="h-3 w-3 rounded-full bg-rose-500/80" aria-hidden="true" />
