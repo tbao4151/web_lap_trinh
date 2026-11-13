@@ -331,8 +331,25 @@ function DiagramBlockView({ data }: { data: ImageBlockData }) {
 function SlideBlockView({ data }: { data: SlideBlockData }) {
   const [idx, setIdx] = useState(0);
   const [expanded, setExpanded] = useState(false);
+  const expandButtonRef = useRef<HTMLButtonElement>(null);
   const slides = data.slides;
   const activeSlide = slides[idx] ?? slides[0];
+
+  // Escape dismisses the full-screen slide view and restores keyboard focus.
+  useEffect(() => {
+    if (!expanded) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        setExpanded(false);
+        expandButtonRef.current?.focus();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [expanded]);
 
   if (!activeSlide) return null;
 
@@ -351,9 +368,11 @@ function SlideBlockView({ data }: { data: SlideBlockData }) {
         </div>
         <button
           type="button"
+          ref={expandButtonRef}
           onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
           aria-label={expanded ? 'Thu nhỏ slide' : 'Mở rộng toàn màn hình'}
-          className="inline-flex items-center gap-1 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 cursor-pointer"
+          className="inline-flex items-center gap-1 rounded-lg bg-slate-800 px-3 py-1.5 text-xs font-medium text-slate-200 hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-300 cursor-pointer"
         >
           {expanded ? (
             <>
