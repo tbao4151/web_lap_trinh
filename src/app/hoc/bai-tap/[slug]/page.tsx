@@ -51,6 +51,7 @@ export default function CodingLabPage({
   const initializedInputForProblem = useRef<string | null>(null);
   const feedbackScopeRef = useRef<string | null>(null);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyRequestRef = useRef(0);
   const [mobileTab, setMobileTab] = useState<'statement' | 'code' | 'result'>('statement');
   const [leftTab, setLeftTab] = useState<'statement' | 'hints' | 'submissions'>('statement');
   const [wideEditor, setWideEditor] = useState(false);
@@ -82,6 +83,11 @@ export default function CodingLabPage({
     const feedbackScope = `${problem.slug}::${language}`;
     if (feedbackScopeRef.current !== feedbackScope) {
       feedbackScopeRef.current = feedbackScope;
+      copyRequestRef.current += 1;
+      if (copyTimeoutRef.current !== null) {
+        clearTimeout(copyTimeoutRef.current);
+        copyTimeoutRef.current = null;
+      }
       setCopied(false);
       setJudgeNotice(null);
     }
@@ -115,6 +121,7 @@ export default function CodingLabPage({
   const lineCount = Math.max(12, code.split('\n').length);
 
   const clearCopyFeedback = () => {
+    copyRequestRef.current += 1;
     if (copyTimeoutRef.current !== null) {
       clearTimeout(copyTimeoutRef.current);
       copyTimeoutRef.current = null;
@@ -180,14 +187,18 @@ export default function CodingLabPage({
 
   const handleCopyCode = async () => {
     clearCopyFeedback();
+    const request = copyRequestRef.current;
     try {
       await navigator.clipboard.writeText(code);
+      // Ignore an older clipboard response after another copy, edit or reset.
+      if (request !== copyRequestRef.current) return;
       setCopied(true);
       copyTimeoutRef.current = setTimeout(() => {
         setCopied(false);
         copyTimeoutRef.current = null;
       }, 2000);
     } catch {
+      if (request !== copyRequestRef.current) return;
       clearCopyFeedback();
       showToast(
         'Không thể sao chép mã nguồn',
