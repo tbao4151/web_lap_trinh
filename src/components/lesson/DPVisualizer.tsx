@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo, useState } from 'react';
+import React, { useId, useMemo, useState } from 'react';
 import {
   SkipBack,
   ChevronLeft,
@@ -173,6 +173,7 @@ export function DPVisualizer({
   description?: string;
   presets?: CoinChangePreset[];
 }) {
+  const presetSelectId = useId();
   const safePresets = presets.length > 0 ? presets : DEFAULT_PRESETS;
   const [selectedPresetId, setSelectedPresetId] = useState<string>(safePresets[0].id);
   const [stepIdx, setStepIdx] = useState<number>(0);
@@ -214,13 +215,13 @@ export function DPVisualizer({
 
         <div className="flex flex-col gap-1.5">
           <label
-            htmlFor="dp-preset-select"
+            htmlFor={presetSelectId}
             className="text-xs font-medium text-slate-600 dark:text-slate-400"
           >
             Bộ dữ liệu mô phỏng:
           </label>
           <select
-            id="dp-preset-select"
+            id={presetSelectId}
             value={activePreset.id}
             onChange={(e) => handlePresetChange(e.target.value)}
             className="rounded-lg border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-medium text-slate-800 sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
