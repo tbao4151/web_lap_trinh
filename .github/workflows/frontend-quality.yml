@@ -40,5 +40,8 @@ jobs:
       - name: Verify ESLint
         run: npm run lint
 
+      - name: Verify Coding Lab regression tests
+        run: npm test
+
       - name: Verify Next.js production build
         run: npm run build
