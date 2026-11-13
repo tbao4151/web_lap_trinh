@@ -63,6 +63,7 @@ export default function CodingLabPage({
   } | null>(null);
 
   useEffect(() => () => {
+    copyRequestRef.current += 1;
     if (copyTimeoutRef.current !== null) clearTimeout(copyTimeoutRef.current);
   }, []);
 
