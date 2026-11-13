@@ -101,7 +101,7 @@ export default function HomePage() {
                 <div className="mt-7 flex flex-wrap items-center gap-3">
                   <Link
                     href={ROUTES.courses}
-                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 transition"
+                    className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-xs hover:bg-indigo-700 transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     <span>Khám phá khóa học</span>
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -109,7 +109,7 @@ export default function HomePage() {
 
                   <Link
                     href={ROUTES.lessonPlayer('dp-tu-duy-den-nang-cao', 'dp-1d-doi-tien')}
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700"
+                    className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-800 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
                   >
                     <Play className="h-4 w-4 text-teal-600 dark:text-teal-400" aria-hidden="true" />
                     <span>Trải nghiệm bài học mẫu (DP Đổi tiền)</span>
