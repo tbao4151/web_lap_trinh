@@ -179,7 +179,7 @@ export default function HomePage() {
                       <span>Trạng thái bảng DP với xu [1, 3, 4], tổng S = 6:</span>
                       <span className="font-mono text-teal-300">dp[6] = 2 (chọn 3 + 3)</span>
                     </div>
-                    <div className="mt-2.5 grid grid-cols-7 gap-1.5 text-center font-mono text-xs">
+                    <div className="mt-2.5 grid grid-cols-4 gap-1.5 text-center font-mono text-xs sm:grid-cols-7">
                       {[
                         { s: 0, v: '0', note: 'Base' },
                         { s: 1, v: '1', note: '+1' },
