@@ -142,11 +142,11 @@ export default function HomePage() {
               <div className="min-w-0 lg:col-span-6">
                 <div className="min-w-0 rounded-2xl border border-slate-200 bg-slate-950 p-4 text-slate-100 shadow-xl dark:border-slate-800">
                   <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-3">
-                    <div className="flex items-center gap-2">
-                      <span className="h-3 w-3 rounded-full bg-rose-500/80" aria-hidden="true" />
+                    <div className="flex min-w-0 flex-wrap items-center gap-2">
+                      <span className="h-3 w-3 shrink-0 rounded-full bg-rose-500/80" aria-hidden="true" />
                       <span className="h-3 w-3 rounded-full bg-amber-500/80" aria-hidden="true" />
                       <span className="h-3 w-3 rounded-full bg-emerald-500/80" aria-hidden="true" />
-                      <span className="ml-2 font-mono text-xs text-slate-400">
+                      <span className="min-w-0 font-mono text-xs text-slate-400 break-words sm:ml-2">
                         Coding Lab & Lesson Preview (Tương tác trực tiếp)
                       </span>
                     </div>
