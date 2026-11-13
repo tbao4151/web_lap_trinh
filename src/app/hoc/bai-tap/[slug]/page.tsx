@@ -632,7 +632,7 @@ export default function CodingLabPage({
                 ))}
               </div>
 
-              <p id="code-editor-keyboard-help" className="sr-only">Nhấn Tab để thụt đầu dòng; nhấn Shift cộng Tab để chuyển tiêu điểm về điều khiển trước đó.</p>
+              <p id="code-editor-keyboard-help" className="sr-only">Nhấn Tab để thụt đầu dòng; nhấn Shift cộng Tab để chuyển tiêu điểm về điều khiển trước đó. Nhấn Control cộng S hoặc Command cộng S để lưu nháp.</p>
               <label htmlFor="code-editor-textarea" className="sr-only">
                 Soạn thảo mã nguồn {LANGUAGE_META[language].label}
               </label>
@@ -641,6 +641,11 @@ export default function CodingLabPage({
                 value={code}
                 onChange={(e) => handleCodeChange(e.target.value)}
                 onKeyDown={(e) => {
+                  if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 's') {
+                    e.preventDefault();
+                    handleManualSave();
+                    return;
+                  }
                   if (e.key === 'Tab' && !e.shiftKey) {
                     e.preventDefault();
                     const start = e.currentTarget.selectionStart;
