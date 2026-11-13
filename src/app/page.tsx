@@ -260,7 +260,7 @@ export default function HomePage() {
                     </p>
                   </div>
 
-                  <div className="mt-5 flex items-center justify-between border-t border-slate-200/70 pt-3.5 dark:border-slate-800">
+                  <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200/70 pt-3.5 dark:border-slate-800">
                     <button
                       type="button"
                       aria-pressed={isSelected}
