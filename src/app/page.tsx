@@ -175,7 +175,7 @@ export default function HomePage() {
                   </pre>
 
                   <div className="mt-3 rounded-xl border border-slate-800 bg-slate-900/90 p-3.5">
-                    <div className="flex items-center justify-between text-xs text-slate-400">
+                    <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-400">
                       <span>Trạng thái bảng DP với xu [1, 3, 4], tổng S = 6:</span>
                       <span className="font-mono text-teal-300">dp[6] = 2 (chọn 3 + 3)</span>
                     </div>
