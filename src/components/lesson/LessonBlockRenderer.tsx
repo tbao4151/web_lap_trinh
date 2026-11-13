@@ -670,13 +670,19 @@ export function LessonBlockRenderer({
             </div>
           </div>
 
-          <Link
-            href={ROUTES.codingLab(block.data.problemSlug)}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-teal-700 sm:text-sm"
-          >
-            <span>Mở trong Coding Lab</span>
-            <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          {problem ? (
+            <Link
+              href={ROUTES.codingLab(problem.slug)}
+              className="inline-flex items-center gap-1.5 rounded-xl bg-teal-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-teal-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 sm:text-sm"
+            >
+              <span>Mở trong Coding Lab</span>
+              <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+            </Link>
+          ) : (
+            <span role="status" className="text-xs font-medium text-amber-800 dark:text-amber-300">
+              Bài tập chưa khả dụng trong bản demo
+            </span>
+          )}
         </div>
       );
     }
