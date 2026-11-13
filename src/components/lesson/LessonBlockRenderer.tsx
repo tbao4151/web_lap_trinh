@@ -117,6 +117,9 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
               </>
             )}
           </button>
+          <span role="status" aria-live="polite" className="sr-only">
+            {copyStatus === 'copied' ? 'Đã sao chép mã nguồn' : ''}
+          </span>
         </div>
       </div>
       {copyStatus === 'error' ? (
