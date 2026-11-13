@@ -49,6 +49,7 @@ export default function CodingLabPage({
   const [code, setCode] = useState<string>('');
   const [customInput, setCustomInput] = useState<string>('');
   const initializedInputForProblem = useRef<string | null>(null);
+  const customInputRef = useRef<HTMLTextAreaElement>(null);
   const feedbackScopeRef = useRef<string | null>(null);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const copyRequestRef = useRef(0);
@@ -469,6 +470,8 @@ export default function CodingLabPage({
                             setCustomInput(sample.input);
                             // On mobile the input panel is a separate view.
                             setMobileTab('result');
+                            // Focus the input after its panel becomes visible on mobile.
+                            requestAnimationFrame(() => customInputRef.current?.focus());
                             showToast(
                               `Đã nạp Input Ví dụ #${idx + 1} vào ô Custom Input`,
                               undefined,
@@ -694,6 +697,7 @@ export default function CodingLabPage({
                   Dữ liệu đầu vào tùy chỉnh (stdin, chưa được thực thi):
                 </label>
                 <textarea
+                  ref={customInputRef}
                   id="custom-input-box"
                   rows={4}
                   value={customInput}
@@ -712,7 +716,7 @@ export default function CodingLabPage({
                 </div>
 
                 {judgeNotice ? (
-                  <div className="mt-1 rounded-xl border border-amber-300 bg-amber-50/90 p-3 text-xs text-amber-950 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200">
+                  <div role="status" className="mt-1 rounded-xl border border-amber-300 bg-amber-50/90 p-3 text-xs text-amber-950 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200">
                     <div className="flex items-center gap-1.5 font-bold">
                       <FlaskConical className="h-4 w-4 shrink-0" aria-hidden="true" />
                       <span>
