@@ -151,15 +151,14 @@ export default function HomePage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center gap-1" role="tablist" aria-label="Chọn ngôn ngữ xem thử">
+                    <div className="flex items-center gap-1" role="group" aria-label="Chọn ngôn ngữ xem thử">
                       {(['cpp', 'python', 'java', 'c'] as ProgrammingLanguage[]).map((lang) => (
                         <button
                           key={lang}
                           type="button"
-                          role="tab"
-                          aria-selected={heroLang === lang}
+                          aria-pressed={heroLang === lang}
                           onClick={() => setHeroLang(lang)}
-                          className={`rounded-md px-2.5 py-1 font-mono text-xs font-medium transition cursor-pointer ${
+                          className={`rounded-md px-2.5 py-1 font-mono text-xs font-medium transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 ${
                             heroLang === lang
                               ? 'bg-indigo-600 text-white'
                               : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
