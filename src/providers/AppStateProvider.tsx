@@ -4,6 +4,7 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useS
 import { BRAND_CONFIG } from '@/config/brand';
 import { buildCompleteLessonsMap } from '@/data/courses-seed';
 import { createInitialDemoState } from '@/data/seed';
+import { readCodeDraft, writeCodeDraft, removeCodeDraft } from '@/utils/codeDrafts';
 import type {
   AppRole,
   Course,
@@ -301,16 +302,13 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const getCodeDraft = useCallback(
-    (problemSlug: string, language: ProgrammingLanguage, fallback: string) => {
-      const key = `${problemSlug}::${language}`;
-      return state.codeDrafts[key] ?? fallback;
-    },
+    (problemSlug: string, language: ProgrammingLanguage, fallback: string) =>
+      readCodeDraft(state.codeDrafts, problemSlug, language, fallback),
     [state.codeDrafts]
   );
 
   const saveCodeDraft = useCallback(
     (problemSlug: string, language: ProgrammingLanguage, code: string) => {
-      const key = `${problemSlug}::${language}`;
       setState((prev) => {
         const attemptedProblemSlugs = prev.attemptedProblemSlugs.includes(problemSlug)
           ? prev.attemptedProblemSlugs
@@ -318,7 +316,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         return {
           ...prev,
           attemptedProblemSlugs,
-          codeDrafts: { ...prev.codeDrafts, [key]: code },
+          codeDrafts: writeCodeDraft(prev.codeDrafts, problemSlug, language, code),
         };
       });
     },
@@ -326,12 +324,10 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   );
 
   const resetCodeDraft = useCallback((problemSlug: string, language: ProgrammingLanguage) => {
-    const key = `${problemSlug}::${language}`;
-    setState((prev) => {
-      const next = { ...prev.codeDrafts };
-      delete next[key];
-      return { ...prev, codeDrafts: next };
-    });
+    setState((prev) => ({
+      ...prev,
+      codeDrafts: removeCodeDraft(prev.codeDrafts, problemSlug, language),
+    }));
   }, []);
 
   const updateCourse = useCallback(
