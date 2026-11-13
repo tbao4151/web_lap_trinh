@@ -670,7 +670,7 @@ export default function CodingLabPage({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <span className="text-xs font-bold text-slate-900 dark:text-white">
-                  Custom Input & Bảng điều khiển Chấm thử (Demo)
+                  Dữ liệu đầu vào & Kết quả mô phỏng
                 </span>
                 <DemoBadge text="Không biên dịch thực trên Server" />
               </div>
@@ -680,7 +680,7 @@ export default function CodingLabPage({
                   onClick={() => handleSimulateJudge('run')}
                   className="rounded-lg bg-teal-600 px-3 py-1 text-xs font-semibold text-white hover:bg-teal-700 cursor-pointer"
                 >
-                  Chạy thử Input này
+                  Xem mô phỏng chạy thử
                 </button>
               </div>
             </div>
@@ -691,15 +691,19 @@ export default function CodingLabPage({
                   htmlFor="custom-input-box"
                   className="block text-xs font-semibold text-slate-600 dark:text-slate-400"
                 >
-                  Dữ liệu đầu vào tùy chỉnh (stdin):
+                  Dữ liệu đầu vào tùy chỉnh (stdin, chưa được thực thi):
                 </label>
                 <textarea
                   id="custom-input-box"
                   rows={4}
                   value={customInput}
                   onChange={(e) => setCustomInput(e.target.value)}
+                  aria-describedby="custom-input-demo-note"
                   className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 p-2.5 font-mono text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
+                <p id="custom-input-demo-note" className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  Bạn có thể sửa dữ liệu đầu vào để chuẩn bị bài làm. Chế độ demo không chạy mã nguồn và không xử lý dữ liệu này.
+                </p>
               </div>
 
               <div className="md:col-span-7">
