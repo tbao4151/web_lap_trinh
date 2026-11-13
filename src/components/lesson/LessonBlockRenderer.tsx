@@ -429,7 +429,7 @@ function SlideBlockView({ data }: { data: SlideBlockData }) {
               onClick={() => setIdx(sIdx)}
               aria-label={`Chuyển tới slide ${sIdx + 1}`}
               aria-current={sIdx === idx ? 'step' : undefined}
-              className={`h-2 rounded-full transition cursor-pointer ${
+              className={`h-2 rounded-full transition cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-indigo-300 ${
                 sIdx === idx ? 'w-6 bg-indigo-500' : 'w-2 bg-slate-700'
               }`}
             />
