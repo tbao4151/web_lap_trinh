@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   Info,
@@ -44,15 +44,23 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
       : availableLangs[0] ?? 'cpp'
   );
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+  const copyRequestRef = useRef(0);
+
+  // Invalidate outstanding clipboard promises when this lesson block unmounts.
+  useEffect(() => () => {
+    copyRequestRef.current += 1;
+  }, []);
 
   const code = data.snippets[selectedLang] ?? '';
 
   const handleCopy = async () => {
+    const requestId = ++copyRequestRef.current;
+    setCopyStatus('idle');
     try {
       await navigator.clipboard.writeText(code);
-      setCopyStatus('copied');
+      if (requestId === copyRequestRef.current) setCopyStatus('copied');
     } catch {
-      setCopyStatus('error');
+      if (requestId === copyRequestRef.current) setCopyStatus('error');
     }
   };
 
@@ -77,6 +85,7 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
                 aria-pressed={selectedLang === lang}
                 aria-label={`Ngôn ngữ ${LANGUAGE_META[lang].label}`}
                 onClick={() => {
+                  copyRequestRef.current += 1;
                   setSelectedLang(lang);
                   setCopyStatus('idle');
                 }}
