@@ -263,8 +263,9 @@ export default function HomePage() {
                   <div className="mt-5 flex items-center justify-between border-t border-slate-200/70 pt-3.5 dark:border-slate-800">
                     <button
                       type="button"
+                      aria-pressed={isSelected}
                       onClick={() => setActiveGoal(goalKey)}
-                      className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 cursor-pointer"
+                      className="rounded-sm text-xs font-semibold text-indigo-600 hover:text-indigo-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-indigo-400 dark:focus-visible:outline-indigo-400 cursor-pointer"
                     >
                       {isSelected ? 'Đang áp dụng cho Dashboard' : 'Chọn làm mục tiêu ưu tiên'}
                     </button>
