@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useId, useRef, useState } from 'react';
 import Link from 'next/link';
 import {
   Info,
@@ -202,6 +202,9 @@ function CalloutBlockView({ data }: { data: CalloutBlockData }) {
 }
 
 function DiagramBlockView({ data }: { data: ImageBlockData }) {
+  // Multiple diagrams can share a lesson; SVG fragment IDs must be unique.
+  const arrowMarkerId = useId();
+
   return (
     <figure className="my-6 overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
       <div
@@ -213,7 +216,7 @@ function DiagramBlockView({ data }: { data: ImageBlockData }) {
           <svg viewBox="0 0 600 160" className="w-full max-w-xl" aria-hidden="true">
             <defs>
               <marker
-                id="arrow"
+                id={arrowMarkerId}
                 viewBox="0 0 10 10"
                 refX="6"
                 refY="5"
@@ -230,14 +233,14 @@ function DiagramBlockView({ data }: { data: ImageBlockData }) {
               stroke="#94a3b8"
               strokeWidth="2"
               strokeDasharray="5,5"
-              markerEnd="url(#arrow)"
+              markerEnd={`url(#${arrowMarkerId})`}
             />
             <path
               d="M 270 80 Q 370 30 475 75"
               fill="none"
               stroke="#0d9488"
               strokeWidth="3"
-              markerEnd="url(#arrow)"
+              markerEnd={`url(#${arrowMarkerId})`}
             />
             <path
               d="M 380 80 L 470 80"
@@ -245,7 +248,7 @@ function DiagramBlockView({ data }: { data: ImageBlockData }) {
               stroke="#94a3b8"
               strokeWidth="2"
               strokeDasharray="5,5"
-              markerEnd="url(#arrow)"
+              markerEnd={`url(#${arrowMarkerId})`}
             />
             {[
               { x: 60, label: 'dp[2]=2', sub: 's - 4' },
