@@ -329,7 +329,7 @@ export default function HomePage() {
                 <Link
                   key={domain.id}
                   href={`${ROUTES.courses}?domain=${domain.id}`}
-                  className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 hover:border-indigo-400 dark:border-slate-800 dark:bg-slate-900"
+                  className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 hover:border-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:focus-visible:outline-indigo-400"
                 >
                   <div>
                     <div className="flex items-center justify-between">
