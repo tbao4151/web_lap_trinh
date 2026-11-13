@@ -116,7 +116,7 @@ export default function HomePage() {
                   </Link>
                 </div>
 
-                <div className="mt-8 grid grid-cols-3 gap-4 border-t border-slate-200 pt-6 text-xs text-slate-600 dark:border-slate-800 dark:text-slate-400">
+                <div className="mt-8 grid grid-cols-1 gap-4 border-t border-slate-200 pt-6 text-xs sm:grid-cols-3 text-slate-600 dark:border-slate-800 dark:text-slate-400">
                   <div>
                     <div className="font-mono text-base font-bold text-slate-900 dark:text-white">
                       4 trụ cột
@@ -271,7 +271,7 @@ export default function HomePage() {
                     </button>
                     <Link
                       href={`${ROUTES.courses}?goal=${goalKey}`}
-                      className="text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+                      className="rounded-sm text-xs font-medium text-slate-500 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:text-slate-400 dark:hover:text-white dark:focus-visible:outline-indigo-400"
                     >
                       Xem khóa →
                     </Link>
