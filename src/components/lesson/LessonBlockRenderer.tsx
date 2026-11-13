@@ -137,7 +137,7 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
           {data.sampleInput ? (
             <div>
               <div className="font-semibold text-slate-400">Input mẫu:</div>
-              <pre className="mt-1 rounded-lg bg-slate-950 p-2.5 font-mono text-slate-200">
+              <pre className="mt-1 max-w-full overflow-x-auto rounded-lg bg-slate-950 p-2.5 font-mono text-slate-200">
                 {data.sampleInput}
               </pre>
             </div>
@@ -145,7 +145,7 @@ function CodeBlockView({ data }: { data: CodeBlockData }) {
           {data.expectedOutput ? (
             <div>
               <div className="font-semibold text-slate-400">Output mong đợi:</div>
-              <pre className="mt-1 rounded-lg bg-slate-950 p-2.5 font-mono text-teal-300">
+              <pre className="mt-1 max-w-full overflow-x-auto rounded-lg bg-slate-950 p-2.5 font-mono text-teal-300">
                 {data.expectedOutput}
               </pre>
             </div>
