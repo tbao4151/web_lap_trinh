@@ -37,7 +37,7 @@ end $$;
 -- Anonymous clients must have no read or write access.
 set local role anon;
 select set_config('request.jwt.claim.role', 'anon', true);
-do $
+do $$
 begin
   begin
     perform 1 from public.learner_profiles limit 1;
@@ -53,7 +53,7 @@ begin
   exception
     when insufficient_privilege then null;
   end;
-end $;
+end $$;
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', :'test_user_a', true);
