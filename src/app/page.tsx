@@ -464,7 +464,7 @@ export default function HomePage() {
                       Thực hành trong Coding Lab đa ngôn ngữ
                     </h3>
                     <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-                      Viết mã C, C++, Python hoặc Java ngay trên trình duyệt, đối chiếu các bộ test mẫu và phân tích độ phức tạp theo Subtask.
+                      Soạn và lưu nháp mã C, C++, Python hoặc Java ngay trên trình duyệt. Kết quả Subtask hiện là bản ghi minh họa; chưa chạy hay chấm mã nguồn thực tế.
                     </p>
                   </div>
                 </li>
