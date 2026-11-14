@@ -11,13 +11,6 @@ select
   (select id from auth.users order by id offset 1 limit 1)::text as test_user_b
 \gset
 
-do $$
-begin
-  if current_setting('test_user_a', true) is not null then
-    null;
-  end if;
-end $$;
-
 -- psql variables are expanded outside dollar-quoted blocks.
 select set_config('algoacademy.test_user_a', :'test_user_a', true);
 select set_config('algoacademy.test_user_b', :'test_user_b', true);
@@ -40,6 +33,27 @@ begin
     raise exception 'Test users already have profiles; refusing to modify them';
   end if;
 end $$;
+
+-- Anonymous clients must have no read or write access.
+set local role anon;
+select set_config('request.jwt.claim.role', 'anon', true);
+do $
+begin
+  begin
+    perform 1 from public.learner_profiles limit 1;
+    -- An empty result is acceptable only if SELECT is granted, which is forbidden.
+    raise exception 'anon unexpectedly has SELECT privilege';
+  exception
+    when insufficient_privilege then null;
+  end;
+  begin
+    insert into public.learner_profiles (user_id, display_name)
+    values (current_setting('algoacademy.test_user_a')::uuid, 'Unauthorized anon');
+    raise exception 'anon unexpectedly inserted profile';
+  exception
+    when insufficient_privilege then null;
+  end;
+end $;
 
 set local role authenticated;
 select set_config('request.jwt.claim.sub', :'test_user_a', true);
