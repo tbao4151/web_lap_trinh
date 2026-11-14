@@ -3,7 +3,9 @@
 -- Requires Supabase Auth (auth.users). Never store authorization roles here.
 begin;
 
-create table if not exists public.learner_profiles (
+-- Fail closed if an existing table has a different schema or policies.
+-- Never attach owner-only policies to an unknown pre-existing relation.
+create table public.learner_profiles (
   user_id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null default '' check (char_length(display_name) <= 120),
   created_at timestamptz not null default now(),
