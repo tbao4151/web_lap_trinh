@@ -55,6 +55,18 @@ begin
     when insufficient_privilege then null;
   end;
   begin
+    update public.learner_profiles set display_name = 'Unauthorized anon update';
+    raise exception 'anon unexpectedly has UPDATE privilege';
+  exception
+    when insufficient_privilege then null;
+  end;
+  begin
+    delete from public.learner_profiles;
+    raise exception 'anon unexpectedly has DELETE privilege';
+  exception
+    when insufficient_privilege then null;
+  end;
+  begin
     insert into public.learner_profiles (user_id, display_name)
     values (current_setting('algoacademy.test_user_a')::uuid, 'Unauthorized anon');
     raise exception 'anon unexpectedly inserted profile';
@@ -102,6 +114,11 @@ begin
   values (b, 'Temporary RLS B');
   if not exists (select 1 from public.learner_profiles where user_id = b) then
     raise exception 'B cannot read own profile';
+  end if;
+  delete from public.learner_profiles where user_id = b;
+  if not found then raise exception 'B cannot delete own profile'; end if;
+  if exists (select 1 from public.learner_profiles where user_id = b) then
+    raise exception 'B still sees deleted own profile';
   end if;
 end $$;
 
