@@ -25,9 +25,9 @@ export function CourseCard({
 }) {
   const domain = DOMAINS.find((d) => d.id === course.domainId);
   const lessonCount = course.modules.reduce((acc, m) => acc + m.lessons.length, 0);
-  const firstPreview =
-    course.modules.flatMap((m) => m.lessons).find((l) => l.isPreview) ??
-    course.modules[0]?.lessons[0];
+  // Do not advertise a locked lesson as a free preview.
+  const firstPreview = course.modules.flatMap((m) => m.lessons).find((l) => l.isPreview);
+  const lessonToOpen = isEnrolled ? (course.modules[0]?.lessons[0] ?? firstPreview) : firstPreview;
 
   return (
     <article className="group flex flex-col justify-between rounded-2xl border border-slate-200 bg-white shadow-2xs transition hover:border-indigo-300 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-indigo-700">
@@ -110,9 +110,9 @@ export function CourseCard({
           Xem đề cương chi tiết
         </Link>
 
-        {firstPreview ? (
+        {lessonToOpen ? (
           <Link
-            href={ROUTES.lessonPlayer(course.slug, firstPreview.slug)}
+            href={ROUTES.lessonPlayer(course.slug, lessonToOpen.slug)}
             className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-800 hover:bg-indigo-600 hover:text-white transition dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-indigo-600"
           >
             <span>{isEnrolled ? 'Học tiếp' : 'Học thử ngay'}</span>
