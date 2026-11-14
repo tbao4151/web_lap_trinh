@@ -136,6 +136,26 @@ begin
   end;
 end $$;
 
+-- A must not reassign their own profile to B, even with B's row absent.
+-- This exercises UPDATE WITH CHECK rather than relying on a duplicate PK.
+do $
+begin
+  begin
+    update public.learner_profiles
+       set user_id = current_setting('algoacademy.test_user_b')::uuid
+     where user_id = current_setting('algoacademy.test_user_a')::uuid;
+    raise exception 'A reassigned profile ownership to B';
+  exception
+    when check_violation or insufficient_privilege then null;
+  end;
+  if not exists (
+    select 1 from public.learner_profiles
+    where user_id = current_setting('algoacademy.test_user_a')::uuid
+  ) then
+    raise exception 'Owner A profile disappeared after rejected reassignment';
+  end if;
+end $;
+
 update public.learner_profiles set display_name = 'Updated RLS A'
 where user_id = :'test_user_a'::uuid;
 do $$
