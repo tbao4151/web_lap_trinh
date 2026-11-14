@@ -332,8 +332,8 @@ export default function HomePage() {
                   className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-4 hover:border-indigo-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-800 dark:bg-slate-900 dark:focus-visible:outline-indigo-400"
                 >
                   <div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-bold text-slate-900 dark:text-white">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <span className="min-w-0 text-sm font-bold text-slate-900 dark:text-white">
                         {domain.name}
                       </span>
                       <span className="rounded bg-slate-100 px-2 py-0.5 text-[11px] font-medium text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -369,7 +369,7 @@ export default function HomePage() {
             </div>
             <Link
               href={ROUTES.lessonPlayer('dp-tu-duy-den-nang-cao', 'dp-1d-doi-tien')}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-indigo-700 sm:text-sm"
+              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-semibold text-white hover:bg-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:text-sm"
             >
               <span>Mở toàn bộ bài học trong Lesson Player</span>
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -396,7 +396,7 @@ export default function HomePage() {
               </div>
               <Link
                 href={ROUTES.courses}
-                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus-visible:outline-indigo-400"
               >
                 <span>Xem tất cả {state.courses.length} khóa học</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
