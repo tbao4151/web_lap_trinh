@@ -74,7 +74,7 @@ begin
     values (a, 'Spoofed');
     raise exception 'B inserted A profile';
   exception
-    when check_violation or insufficient_privilege or unique_violation then null;
+    when check_violation or insufficient_privilege then null;
   end;
   insert into public.learner_profiles (user_id, display_name)
   values (b, 'Temporary RLS B');
