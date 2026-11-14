@@ -403,6 +403,16 @@ export default function HomePage() {
               </Link>
             </div>
 
+            {featuredCourses.length === 0 ? (
+              <div className="mt-8 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-6 text-center dark:border-slate-700 dark:bg-slate-900">
+                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Chưa có khóa học để giới thiệu
+                </p>
+                <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
+                  Danh sách khóa học mẫu hiện đang trống. Bạn có thể khôi phục dữ liệu demo từ thanh công cụ.
+                </p>
+              </div>
+            ) : (
             <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {featuredCourses.map((course) => {
                 const progress = courseService.getCourseProgress(state, course);
@@ -417,6 +427,7 @@ export default function HomePage() {
                 );
               })}
             </div>
+            )}
           </div>
         </section>
 
