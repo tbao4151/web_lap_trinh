@@ -1,15 +1,23 @@
 -- AlgoAcademy: disposable Supabase behavioral RLS test.
 -- Run with psql as a privileged migration/test operator, NOT in production.
--- Prerequisites: migration applied; two distinct throwaway auth.users exist.
+-- Prerequisites: migration applied; pass two distinct throwaway auth.users IDs with -v.
 -- All learner_profiles mutations are rolled back. Auth users are not modified.
 -- This tests PostgreSQL role/JWT claim simulation, not the HTTP PostgREST path.
 \set ON_ERROR_STOP on
 begin;
 
-select
-  (select id from auth.users order by id limit 1)::text as test_user_a,
-  (select id from auth.users order by id offset 1 limit 1)::text as test_user_b
-\gset
+-- Explicitly supply IDs of two disposable test accounts. Never select arbitrary
+-- existing auth.users, which may belong to real learners.
+\if :{?test_user_a}
+\else
+  \echo 'Missing test_user_a. Pass -v test_user_a=<throwaway-auth-uuid>'
+  \quit 3
+\endif
+\if :{?test_user_b}
+\else
+  \echo 'Missing test_user_b. Pass -v test_user_b=<throwaway-auth-uuid>'
+  \quit 3
+\endif
 
 -- psql variables are expanded outside dollar-quoted blocks.
 select set_config('algoacademy.test_user_a', :'test_user_a', true);
