@@ -123,6 +123,19 @@ begin
 end $$;
 
 select set_config('request.jwt.claim.sub', :'test_user_a', true);
+-- A must not create a profile for B even after B's own row was deleted.
+-- This deliberately avoids a duplicate-key false positive.
+do $
+begin
+  begin
+    insert into public.learner_profiles (user_id, display_name)
+    values (current_setting('algoacademy.test_user_b')::uuid, 'Spoofed by A');
+    raise exception 'A inserted B profile';
+  exception
+    when check_violation or insufficient_privilege then null;
+  end;
+end $;
+
 update public.learner_profiles set display_name = 'Updated RLS A'
 where user_id = :'test_user_a'::uuid;
 do $$
