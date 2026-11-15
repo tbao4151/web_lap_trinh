@@ -27,6 +27,19 @@ begin
     raise exception 'anon must not have learner_profiles CRUD privileges';
   end if;
 
+  -- PUBLIC grants reach anon and all other roles, including future roles.
+  -- Checking anon alone cannot detect broad grants masked by a later REVOKE.
+  if exists (
+    select 1
+    from pg_class c,
+         lateral aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) acl
+    where c.oid = target
+      and acl.grantee = 0
+      and acl.privilege_type in ('SELECT', 'INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER')
+  ) then
+    raise exception 'learner_profiles must not grant table privileges to PUBLIC';
+  end if;
+
   if not (
     has_table_privilege('authenticated', target, 'SELECT')
     and has_table_privilege('authenticated', target, 'INSERT')
