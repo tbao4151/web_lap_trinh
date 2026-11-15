@@ -138,7 +138,7 @@ end $$;
 
 -- A must not reassign their own profile to B, even with B's row absent.
 -- This exercises UPDATE WITH CHECK rather than relying on a duplicate PK.
-do $
+do $$
 begin
   begin
     update public.learner_profiles
@@ -154,7 +154,7 @@ begin
   ) then
     raise exception 'Owner A profile disappeared after rejected reassignment';
   end if;
-end $;
+end $$;
 
 update public.learner_profiles set display_name = 'Updated RLS A'
 where user_id = :'test_user_a'::uuid;
