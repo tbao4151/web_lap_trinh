@@ -44,3 +44,29 @@ Rollback is **destructive**: `DROP TABLE public.learner_profiles;`. Only use it 
 
 ## Merge gate
 Frontend CI and Vercel Preview do not exercise PostgreSQL policies. Merge only after recording disposable-project SQL and client-level RLS results in the PR, confirming the latest PR head and main SHAs, and resolving any concurrent edits.
+
+## Read-only production audit snapshot (2026-11-15; NOT a migration test)
+A read-only inspection of the linked AlgoAcademy Supabase project (PostgreSQL 17.11) found:
+- `public.rls_auto_enable()` is owned by `postgres`, returns `event_trigger`, uses `SECURITY DEFINER`, and sets `search_path=pg_catalog`.
+- `proacl` is NULL (default privileges); effective EXECUTE is **true** for `PUBLIC`, `anon`, and `authenticated`.
+- One event trigger references this function. Its implementation attempts to enable RLS on newly created `public` tables, but catches and logs errors. This mechanism is **not a substitute** for explicitly enabling RLS and defining restrictive policies in every migration.
+- `public.learner_profiles` does not exist in this project. The proposed migration remains unapplied.
+
+**Proposed remediation for separate review (do not run in production as part of this PR):**
+
+```sql
+-- Confirm the function identity, event-trigger dependency and privileges first.
+select p.oid::regprocedure, p.prosecdef, p.proacl,
+       has_function_privilege('anon', p.oid, 'EXECUTE') as anon_exec,
+       has_function_privilege('authenticated', p.oid, 'EXECUTE') as authenticated_exec
+from pg_proc p
+where p.oid = 'public.rls_auto_enable()'::regprocedure;
+
+-- Candidate least-privilege change, only after testing in an isolated clone:
+-- REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM PUBLIC, anon, authenticated;
+-- Verify both effective privileges become false and the event trigger still works.
+-- Rollback, if required and explicitly approved:
+-- GRANT EXECUTE ON FUNCTION public.rls_auto_enable() TO PUBLIC;
+```
+
+The proposed rollback restores the *observed default effective grant*, not a snapshot of any future ACL changes. Before using it, re-read current privileges. An event-trigger function is not a normal application RPC endpoint, so the warning should not be described as a confirmed exploit. No production SQL writes were performed during this audit.
