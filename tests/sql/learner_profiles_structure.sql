@@ -49,6 +49,35 @@ begin
     raise exception 'authenticated role is missing expected CRUD privileges';
   end if;
 
+  -- Authenticated learners may edit only their own rows via RLS; they must
+  -- never receive table-wide maintenance or ownership-like privileges.
+  if has_table_privilege('authenticated', target, 'TRUNCATE')
+     or has_table_privilege('authenticated', target, 'REFERENCES')
+     or has_table_privilege('authenticated', target, 'TRIGGER') then
+    raise exception 'authenticated must not have elevated learner_profiles table privileges';
+  end if;
+
+  -- Ensure all four policies are scoped to authenticated and actually bind
+  -- their predicates to the current authenticated user's UUID.
+  -- Structural assertions supplement (never replace) JWT behavioral tests.
+  if exists (
+    select 1
+    from pg_policy p
+    where p.polrelid = target
+      and (
+        p.polcmd not in ('r', 'a', 'w', 'd')
+        or p.polroles <> array['authenticated'::regrole::oid]
+        or (p.polqual is not null and
+            (pg_get_expr(p.polqual, p.polrelid) not like '%auth.uid()%'
+             or pg_get_expr(p.polqual, p.polrelid) not like '%user_id%'))
+        or (p.polwithcheck is not null and
+            (pg_get_expr(p.polwithcheck, p.polrelid) not like '%auth.uid()%'
+             or pg_get_expr(p.polwithcheck, p.polrelid) not like '%user_id%'))
+      )
+  ) then
+    raise exception 'unexpected learner_profiles policy scope or ownership expression';
+  end if;
+
   select count(*) into policy_count from pg_policy where polrelid = target;
   if policy_count <> 4 then
     raise exception 'expected 4 policies, found %', policy_count;
