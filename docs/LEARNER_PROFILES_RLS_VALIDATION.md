@@ -13,6 +13,25 @@ This document applies to `20261114033000_learner_profiles_rls.sql`. **The migrat
 ## Remaining integration gate
 Use a disposable Supabase project with its actual Auth users and PostgREST endpoint. Validate `anon`, user A, and user B through actual signed JWTs; verify the FK cascade and collect redacted results. Do not write production data.
 
+## Manual HTTP/JWT integration test (new; NOT YET EXECUTED)
+
+`tests/integration/learner_profiles_postgrest.mjs` is a dependency-free Node.js 22 script that makes **actual HTTP PostgREST calls** using two independent signed Supabase Auth access tokens. It tests anon denial, owner CRUD, cross-user isolation and ownership reassignment. This is **not** automatically run in CI: no disposable Supabase project or Auth tokens are provisioned by the repository.
+
+1. Create a **separate disposable Supabase project**, confirm its URL and Auth setup, and apply the migration only there. Verify `learner_profiles` has no existing rows for two **throwaway** Auth users.
+2. Sign in both test users using the normal Supabase Auth flow and obtain their *access tokens* (never service-role or secret keys). The script checks token issuer/subject/expiry locally; Supabase validates their signatures on HTTP requests.
+3. In a private terminal, set the following environment variables without committing or logging values:
+
+   - `ALGOACADEMY_DISPOSABLE_CONFIRM=I_CONFIRM_DISPOSABLE_PROJECT`
+   - `SUPABASE_TEST_URL=https://<disposable-ref>.supabase.co`
+   - `SUPABASE_TEST_EXPECTED_HOST=<disposable-ref>.supabase.co`
+   - `SUPABASE_TEST_ANON_KEY` (legacy anon JWT key, **not** service_role)
+   - `SUPABASE_TEST_JWT_A`, `SUPABASE_TEST_JWT_B` (two signed Auth access tokens)
+
+4. Run `node tests/integration/learner_profiles_postgrest.mjs` and record only the PASS/FAIL outcome, HTTP status codes and date, **never tokens**. The script refuses missing confirmation, HTTP targets, unexpected host, expired or same-user tokens. It creates and deletes only the two throwaway profiles and attempts best-effort cleanup on failure. Inspect/clean test rows manually if cleanup reports an error.
+5. Separately test `auth.users` foreign-key cascade on this disposable project. Do not run the script on the linked production project, even with the confirmation flag.
+
+**Outstanding:** This script has not yet been executed with real JWTs; no real Supabase Auth/PostgREST validation has been claimed. The security-definer event trigger must be reviewed separately.
+
 ## Preconditions
 1. Use an isolated Supabase project with Auth schema and `anon` / `authenticated` roles. Confirm the target table does not already exist; the migration deliberately fails if it does.
 2. Record the migration checksum and verify no prior migration creates `public.learner_profiles`.
