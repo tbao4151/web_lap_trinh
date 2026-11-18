@@ -11,10 +11,13 @@ import {
   CheckCircle2,
   Compass,
 } from 'lucide-react';
-import { GOAL_META, ROUTES } from '@/config/brand';
+import { ROUTES } from '@/config/brand';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
-import { SEED_LEARNING_PATHS } from '@/data/ecosystem-seed';
+import {
+  COMPETITIVE_GOAL_META as GOAL_META,
+  COMPETITIVE_LEARNING_PATHS as SEED_LEARNING_PATHS,
+} from '@/data/competitive-paths';
 import { useAppState } from '@/providers/AppStateProvider';
 import { courseService } from '@/services';
 import type { LearningGoal } from '@/types';
@@ -39,11 +42,11 @@ export default function LearningPathsCatalogPage() {
               <span>Lộ trình học có cấu trúc rõ ràng</span>
             </span>
             <h1 className="mt-3 text-2xl font-extrabold tracking-tight text-slate-900 sm:text-4xl dark:text-white">
-              Chọn đúng lộ trình theo mục tiêu xuất phát của bạn
+              Lộ trình lập trình thi đấu C++ và Python
             </h1>
             <p className="mt-3 text-sm leading-relaxed text-slate-600 sm:text-base dark:text-slate-300">
-              Thay vì học rời rạc từng bài lẻ, mỗi lộ trình kết nối các khóa học lý thuyết, mô phỏng
-              trực quan và danh sách bài tập thực hành theo từng cột mốc kỹ năng.
+              Bốn hướng học từ nhập môn tới HSG và dự bị OI/ICPC, kết nối với khóa học và bài tập Demo hiện có.
+              Phần nội dung thi đấu nâng cao và máy chấm bài thật chưa triển khai.
             </p>
           </div>
 

@@ -3,9 +3,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { CheckCircle2, Compass, ArrowRight, BookOpen, Code2 } from 'lucide-react';
-import { GOAL_META, ROUTES } from '@/config/brand';
+import { ROUTES } from '@/config/brand';
 import { WorkspaceShell } from '@/components/layout/WorkspaceShell';
-import { SEED_LEARNING_PATHS } from '@/data/ecosystem-seed';
+import {
+  COMPETITIVE_GOAL_META as GOAL_META,
+  COMPETITIVE_LEARNING_PATHS as SEED_LEARNING_PATHS,
+} from '@/data/competitive-paths';
 import { useAppState } from '@/providers/AppStateProvider';
 import { courseService } from '@/services';
 import type { LearningGoal } from '@/types';
@@ -18,8 +21,8 @@ export default function LearnerPathsPage() {
   return (
     <WorkspaceShell
       surface="learner"
-      title="Lộ trình Học tập Cá nhân hóa"
-      subtitle="Đồng bộ các chặng khóa học và bài tập theo mục tiêu hiện tại của bạn"
+      title="Lộ trình lập trình thi đấu C++ và Python"
+      subtitle="Lựa chọn lộ trình nhập môn, HSG hoặc dự bị OI/ICPC. Tiến độ hiện được mô phỏng trên trình duyệt."
     >
       {/* Goal Switcher */}
       <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
