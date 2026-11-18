@@ -22,6 +22,9 @@ assert.match(url.hostname, /^[a-z0-9-]+\.supabase\.co$/, 'Expected a Supabase pr
 // Use the legacy anon JWT key for an explicit anonymous Authorization header.
 const apiKey = required('SUPABASE_TEST_ANON_KEY');
 assert.equal(apiKey.split('.').length, 3, 'Expected legacy JWT anon key (not a publishable key)');
+const anonClaims = JSON.parse(Buffer.from(apiKey.split('.')[1], 'base64url').toString('utf8'));
+assert.equal(anonClaims.role, 'anon', 'Refusing a service_role or non-anon API key');
+assert.equal(anonClaims.iss, 'supabase', 'Unexpected legacy anon key issuer');
 const tokenA = required('SUPABASE_TEST_JWT_A');
 const tokenB = required('SUPABASE_TEST_JWT_B');
 const decode = (token) => {
@@ -37,7 +40,10 @@ const a = decode(tokenA);
 const b = decode(tokenB);
 assert.notEqual(a.sub, b.sub, 'Two distinct Auth users are required');
 assert.equal(a.iss, b.iss, 'JWT issuers must match');
-assert(a.iss.includes(url.hostname.split('.')[0]), 'JWT issuer must match the disposable project');
+// A substring check could accept a different project whose ref contains this ref.
+// Supabase Auth access tokens use the exact GoTrue issuer for their project.
+const expectedIssuer = new URL('auth/v1', url).toString().replace(/\/$/, '');
+assert.equal(a.iss, expectedIssuer, 'JWT issuer must exactly match the disposable project');
 const table = new URL('rest/v1/learner_profiles', url);
 const request = async (jwt, method, query = '', body) => {
   const endpoint = new URL(table);
