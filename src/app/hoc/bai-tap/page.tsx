@@ -17,6 +17,7 @@ import {
   LANGUAGE_META,
   ROUTES,
 } from '@/config/brand';
+import { COMPETITIVE_LANGUAGES, getCompetitiveLanguages } from '@/config/competitiveLanguages';
 import { WorkspaceShell } from '@/components/layout/WorkspaceShell';
 import { DifficultyBadge, LanguageBadges } from '@/components/ui/Badges';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -37,6 +38,7 @@ export default function PracticeBankPage() {
   const allTags = useMemo(() => {
     const set = new Set<string>();
     for (const p of state.problems) {
+      if (getCompetitiveLanguages(p.supportedLanguages).length === 0) continue;
       for (const t of p.tags) set.add(t);
     }
     return Array.from(set);
@@ -51,7 +53,7 @@ export default function PracticeBankPage() {
         domainId,
         language,
         tag: selectedTag,
-      }),
+      }).filter((problem) => getCompetitiveLanguages(problem.supportedLanguages).length > 0),
     [state, query, solveState, difficulty, domainId, language, selectedTag]
   );
 
@@ -71,7 +73,7 @@ export default function PracticeBankPage() {
     <WorkspaceShell
       surface="learner"
       title="Ngân hàng Bài tập Thực hành (Coding Lab)"
-      subtitle="Luyện tập 12+ bài toán chuẩn từ Nhập môn đến Quy hoạch động với C, C++, Python và Java."
+      subtitle="Luyện tập thuật toán từ nhập môn đến HSG/OI/ICPC bằng C++ và Python (bản Demo)."
       actions={
         <Link
           href={ROUTES.submissionDetail('sub-demo-ac-coin')}
@@ -175,8 +177,8 @@ export default function PracticeBankPage() {
               onChange={(e) => setLanguage(e.target.value as ProgrammingLanguage | 'all')}
               className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
             >
-              <option value="all">Tất cả 4 ngôn ngữ</option>
-              {(['c', 'cpp', 'python', 'java'] as ProgrammingLanguage[]).map((lang) => (
+              <option value="all">C++ và Python</option>
+              {COMPETITIVE_LANGUAGES.map((lang) => (
                 <option key={lang} value={lang}>
                   {LANGUAGE_META[lang].shortLabel}
                 </option>
@@ -313,7 +315,7 @@ export default function PracticeBankPage() {
                         </td>
 
                         <td className="px-4 py-3.5 whitespace-nowrap">
-                          <LanguageBadges languages={problem.supportedLanguages} compact />
+                          <LanguageBadges languages={getCompetitiveLanguages(problem.supportedLanguages)} compact />
                         </td>
 
                         <td className="px-4 py-3.5 text-right whitespace-nowrap">
