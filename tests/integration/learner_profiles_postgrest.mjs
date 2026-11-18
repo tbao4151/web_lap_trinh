@@ -85,8 +85,10 @@ try {
   denied(await request(null, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'anon' }), 'anon UPDATE');
   denied(await request(null, 'DELETE', `user_id=eq.${a.sub}`), 'anon DELETE');
 
-  ok(await request(tokenA, 'POST', '', { user_id: a.sub, display_name: labelA }), 'A insert');
+  // Mark ownership before the network request: an insert may commit even if its
+  // HTTP response is lost. Cleanup must still attempt to remove that test row.
   owned.add(a.sub);
+  ok(await request(tokenA, 'POST', '', { user_id: a.sub, display_name: labelA }), 'A insert');
   assert.equal(rows(await request(tokenA, 'GET', select(a.sub)), 'A read').length, 1);
   assert.equal(rows(await request(tokenB, 'GET', select(a.sub)), 'B read A').length, 0);
   assert.equal(rows(await request(tokenB, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'spoof' }), 'B update A').length, 0);
@@ -97,8 +99,8 @@ try {
   // B has no row yet: a rejected reassignment cannot be explained by duplicate PK.
   denied(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub }), 'A ownership reassignment');
 
-  ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
   owned.add(b.sub);
+  ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B read').length, 1);
   assert.equal(rows(await request(tokenA, 'GET', select(b.sub)), 'A read B').length, 0);
   // Once B's primary key exists, PostgreSQL may reject reassignment with
