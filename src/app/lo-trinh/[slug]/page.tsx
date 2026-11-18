@@ -11,11 +11,14 @@ import {
   ArrowRight,
   Target,
 } from 'lucide-react';
-import { GOAL_META, ROUTES } from '@/config/brand';
+import { ROUTES } from '@/config/brand';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { SEED_LEARNING_PATHS } from '@/data/ecosystem-seed';
+import {
+  COMPETITIVE_GOAL_META as GOAL_META,
+  resolveCompetitiveLearningPath,
+} from '@/data/competitive-paths';
 import { useAppState } from '@/providers/AppStateProvider';
 import { courseService, problemService } from '@/services';
 
@@ -27,7 +30,7 @@ export default function LearningPathDetailPage({
   const { slug } = use(params);
   const { state, setActiveGoal } = useAppState();
 
-  const path = SEED_LEARNING_PATHS.find((p) => p.slug === slug);
+  const path = resolveCompetitiveLearningPath(slug);
 
   if (!path) {
     return (
@@ -77,6 +80,9 @@ export default function LearningPathDetailPage({
           </h1>
           <p className="mt-2 text-sm text-slate-600 sm:text-base dark:text-slate-300">
             {path.subtitle}
+          </p>
+          <p className="mt-2 text-xs text-amber-700 dark:text-amber-300">
+            Lộ trình hiện dựa trên học liệu và kết quả luyện tập mô phỏng; chưa có Judge Worker để chấm bài thật.
           </p>
 
           <div className="mt-5 grid gap-4 rounded-2xl border border-slate-200/80 bg-slate-50/70 p-4 sm:grid-cols-2 dark:border-slate-800 dark:bg-slate-950">
