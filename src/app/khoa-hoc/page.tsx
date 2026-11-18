@@ -26,6 +26,7 @@ import { DifficultyBadge, LanguageBadges } from '@/components/ui/Badges';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { useAppState } from '@/providers/AppStateProvider';
 import { courseService } from '@/services';
+import { selectCompetitiveCourses } from '@/utils/competitiveCourses';
 import type { Difficulty, LearningGoal, ProgrammingLanguage } from '@/types';
 
 export default function CourseCatalogPage() {
@@ -42,7 +43,7 @@ export default function CourseCatalogPage() {
 
   const courses = useMemo(
     () =>
-      courseService.list(state, {
+      selectCompetitiveCourses(courseService.list(state, {
         query,
         domainId,
         language,
@@ -50,7 +51,7 @@ export default function CourseCatalogPage() {
         goal,
         priceFilter,
         sortBy,
-      }),
+      })),
     [state, query, domainId, language, level, goal, priceFilter, sortBy]
   );
 
@@ -83,10 +84,10 @@ export default function CourseCatalogPage() {
               Online Academy · Danh mục học liệu
             </span>
             <h1 className="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl dark:text-white">
-              Khám phá Khóa học Đa trình độ
+              Khóa học lập trình thi đấu C++ và Python
             </h1>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-              Lọc theo lĩnh vực, ngôn ngữ lập trình, trình độ kiến thức và mục tiêu học tập độc lập.
+              Từ nhập môn đến HSG/OI/ICPC: lựa chọn chuyên đề, ngôn ngữ và độ khó phù hợp. Dữ liệu hiện là bản Demo.
             </p>
           </div>
 
@@ -149,7 +150,7 @@ export default function CourseCatalogPage() {
                   type="search"
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Ví dụ: Quy hoạch động, C++, SQL, Git..."
+                  placeholder="Ví dụ: Quy hoạch động, C++, Python, HSG..."
                   className="w-full rounded-xl border border-slate-300 bg-slate-50 py-2 pr-3 pl-9 text-sm text-slate-900 focus:bg-white dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 />
               </div>
@@ -166,7 +167,7 @@ export default function CourseCatalogPage() {
                 className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               >
                 <option value="all">Tất cả lĩnh vực</option>
-                {DOMAINS.map((d) => (
+                {DOMAINS.filter((d) => d.requiresCodeEditor).map((d) => (
                   <option key={d.id} value={d.id}>
                     {d.name}
                   </option>
@@ -185,7 +186,7 @@ export default function CourseCatalogPage() {
                 className="mt-1 w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
               >
                 <option value="all">Mọi ngôn ngữ</option>
-                {(['c', 'cpp', 'python', 'java'] as ProgrammingLanguage[]).map((lang) => (
+                {(['cpp', 'python'] as ProgrammingLanguage[]).map((lang) => (
                   <option key={lang} value={lang}>
                     {LANGUAGE_META[lang].shortLabel}
                   </option>
@@ -246,7 +247,7 @@ export default function CourseCatalogPage() {
               >
                 Tất cả
               </button>
-              {(Object.keys(GOAL_META) as LearningGoal[]).map((g) => (
+              {(Object.keys(GOAL_META) as LearningGoal[]).filter((g) => g !== 'career-cs').map((g) => (
                 <button
                   key={g}
                   type="button"
