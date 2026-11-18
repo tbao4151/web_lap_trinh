@@ -24,6 +24,7 @@ import { DPVisualizer } from '@/components/lesson/DPVisualizer';
 import { DemoBadge } from '@/components/ui/Badges';
 import { useAppState } from '@/providers/AppStateProvider';
 import { courseService } from '@/services';
+import { selectCompetitiveCourses } from '@/utils/competitiveCourses';
 import type { LearningGoal, ProgrammingLanguage } from '@/types';
 
 const HERO_SNIPPETS: Record<ProgrammingLanguage, string> = {
@@ -71,7 +72,7 @@ export default function HomePage() {
   const { state, setActiveGoal } = useAppState();
   const [heroLang, setHeroLang] = useState<ProgrammingLanguage>('cpp');
 
-  const featuredCourses = courseService.list(state).slice(0, 6);
+  const featuredCourses = selectCompetitiveCourses(courseService.list(state)).slice(0, 6);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -86,16 +87,16 @@ export default function HomePage() {
                 <div className="flex flex-wrap items-center gap-2">
                   <DemoBadge text="Không gian học tập & thực hành đa trình độ" />
                   <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-0.5 font-mono text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                    C · C++ · Python · Java · SQL · Git
+                    C++ · Python · Thuật toán · HSG/OI/ICPC
                   </span>
                 </div>
 
                 <h1 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.15] dark:text-white">
-                  Hiểu bản chất thuật toán qua trực quan hóa và thực hành đa ngôn ngữ
+                  Lập trình thi đấu C++ và Python từ cơ bản đến chuyên sâu
                 </h1>
 
                 <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300">
-                  {BRAND_CONFIG.name} kết nối bài giảng tương tác từng bước, phòng thực hành Coding Lab 4 ngôn ngữ và không gian biên soạn dành cho giáo viên — thiết kế cho người mới bắt đầu từ số 0, học sinh phổ thông, đội tuyển HSG và người tự học CNTT.
+                  {BRAND_CONFIG.name} kết hợp bài học thuật toán tương tác, Coding Lab C++/Python và không gian huấn luyện đội tuyển — từ người mới bắt đầu đến HSG Tin học, Olympic Tin học và ICPC. Hiện là bản Demo, chưa chấm mã nguồn thật.
                 </p>
 
                 <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -125,15 +126,15 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="font-mono text-base font-bold text-slate-900 dark:text-white">
-                      {state.courses.length} khóa mẫu
+                      {featuredCourses.length} khóa học mẫu
                     </div>
-                    <div>Từ Nhập môn C/C++ đến Quy hoạch động, SQL, Git</div>
+                    <div>Chuyên đề C++, Python và thuật toán thi đấu</div>
                   </div>
                   <div>
                     <div className="font-mono text-base font-bold text-slate-900 dark:text-white">
                       {state.problems.length} bài tập seed
                     </div>
-                    <div>Có đầy đủ sample code C, C++, Python, Java</div>
+                    <div>Ngân hàng bài tập Demo, định hướng C++/Python</div>
                   </div>
                 </div>
               </div>
@@ -152,7 +153,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center gap-1" role="group" aria-label="Chọn ngôn ngữ xem thử">
-                      {(['cpp', 'python', 'java', 'c'] as ProgrammingLanguage[]).map((lang) => (
+                      {(['cpp', 'python'] as ProgrammingLanguage[]).map((lang) => (
                         <button
                           key={lang}
                           type="button"
@@ -220,12 +221,12 @@ export default function HomePage() {
               Chọn mục tiêu học tập của bạn — Không ép cố định một trình độ trọn đời
             </h2>
             <p className="mt-2 text-sm text-slate-600 sm:text-base dark:text-slate-300">
-              Tại {BRAND_CONFIG.name}, <strong>mục tiêu học tập</strong> (học phổ thông, thi HSG, hay đi làm) tách biệt hoàn toàn với <strong>trình độ năng lực từng môn</strong>. Một học viên có thể ở mức Nâng cao trong C++ nhưng ở mức Mới bắt đầu khi học Java hoặc SQL.
+              Tại {BRAND_CONFIG.name}, <strong>mục tiêu thi đấu</strong> (nhập môn, HSG, Olympic/ICPC) không đồng nghĩa với <strong>trình độ từng kỹ thuật thuật toán</strong>. Một học viên có thể giỏi quy hoạch động C++ nhưng vẫn cần luyện đồ thị hoặc Python.
             </p>
           </div>
 
           <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {(Object.keys(GOAL_META) as LearningGoal[]).map((goalKey) => {
+            {(Object.keys(GOAL_META) as LearningGoal[]).filter((goalKey) => goalKey !== 'career-cs').map((goalKey) => {
               const meta = GOAL_META[goalKey];
               const isSelected = state.activeGoal === goalKey;
               return (
@@ -315,17 +316,17 @@ export default function HomePage() {
                   <TerminalSquare className="h-5 w-5" aria-hidden="true" />
                 </div>
                 <h3 className="mt-4 text-lg font-bold text-slate-900 dark:text-white">
-                  3. Luyện code 4 ngôn ngữ & Theo dõi kỹ năng
+                  3. Luyện C++/Python & Theo dõi kỹ năng thi đấu
                 </h3>
                 <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">
-                  Chuyển đổi linh hoạt giữa C, C++, Python, Java trong Coding Lab, lưu nháp tự động và xem phân tích chi tiết từng Subtask (AC, WA, TLE, CE).
+                  Chuyển đổi giữa C++ và Python trong Coding Lab, lưu nháp riêng và xem các trạng thái chấm mẫu theo Subtask (AC, WA, TLE, CE). Chưa kết nối Judge Worker.
                 </p>
               </div>
             </div>
 
             {/* 4 Domains */}
             <div className="mt-10 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {DOMAINS.map((domain) => (
+              {DOMAINS.filter((domain) => domain.requiresCodeEditor).map((domain) => (
                 <Link
                   key={domain.id}
                   href={`${ROUTES.courses}?domain=${domain.id}`}
@@ -398,7 +399,7 @@ export default function HomePage() {
                 href={ROUTES.courses}
                 className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:focus-visible:outline-indigo-400"
               >
-                <span>Xem tất cả {state.courses.length} khóa học</span>
+                <span>Xem tất cả {featuredCourses.length} khóa học</span>
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
