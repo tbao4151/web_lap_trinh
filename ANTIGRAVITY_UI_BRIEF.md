@@ -1,5 +1,7 @@
 # ANTIGRAVITY UI IMPLEMENTATION BRIEF
 
+> **CẬP NHẬT PHẠM VI 18/11/2026:** Quyết định sản phẩm mới tại [docs/COMPETITIVE_PROGRAMMING_SCOPE.md](docs/COMPETITIVE_PROGRAMMING_SCOPE.md) được ưu tiên cao hơn các yêu cầu đa lĩnh vực/C/Java phía dưới. Website hiện chỉ phát triển chuyên sâu lập trình thi đấu **C++ và Python** (nhập môn đến HSG/OI/ICPC). Tài liệu này giữ lại làm tham chiếu lịch sử UI; không xóa ồ ạt mã nguồn Demo cũ.
+
 **Dự án:** Nền tảng học lập trình, thuật toán và công nghệ thông tin đa trình độ  
 **Tên sản phẩm tạm thời:** AlgoAcademy (đặt tại một file cấu hình, dễ thay đổi)  
 **Repository duy nhất:** https://github.com/tbao4151/web_lap_trinh  
