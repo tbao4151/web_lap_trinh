@@ -240,16 +240,16 @@ export const SEED_COURSES: Course[] = [
   {
     id: 'course-python-app',
     slug: 'python-ung-dung',
-    title: 'Python từ cơ bản đến ứng dụng',
+    title: 'Python cho lập trình thi đấu: từ cơ bản đến thuật toán',
     shortDescription:
-      'Nắm vững Python 3, cấu trúc dữ liệu list/dict/set, xử lý dữ liệu và giải thuật thực tế.',
+      'Luyện Python 3 cho contest: list, dict, set, nhập xuất, tư duy thuật toán và tối ưu hiệu năng.',
     description:
-      'Python là ngôn ngữ sáng sủa, hiện đại và nằm trong chương trình Tin học THPT mới cũng như công việc thực tế. Khóa học kết hợp cả hai chiều: giải bài toán thuật toán bằng Python và viết script xử lý dữ liệu sạch sẽ.',
+      'Lộ trình Python từ cú pháp căn bản đến giải bài lập trình thi đấu, tập trung các dạng bài mảng, chuỗi, tần suất, độ phức tạp và tối ưu thời gian chạy. Nội dung hiện là Demo và chưa kết nối máy chấm code thật.',
     domainId: 'lap-trinh',
     level: 'intermediate',
-    goals: ['high-school', 'zero-to-hero', 'career-cs'],
+    goals: ['high-school', 'zero-to-hero', 'competitive'],
     languages: ['python'],
-    tags: ['Python 3', 'Cấu trúc dữ liệu', 'Tin học THPT', 'Tự động hóa'],
+    tags: ['Python 3', 'Cấu trúc dữ liệu', 'Thuật toán', 'Lập trình thi đấu'],
     priceVnd: 590000,
     visibility: 'published',
     estimatedHours: 24,
@@ -261,11 +261,11 @@ export const SEED_COURSES: Course[] = [
     outcomes: [
       'Viết mã Python chuẩn PEP8, tận dụng list comprehension và cấu trúc dữ liệu dựng sẵn.',
       'Giải các bài toán mảng, chuỗi, tần suất bằng dict và set với độ phức tạp tối ưu.',
-      'Tổ chức module, đọc/ghi file và xử lý ngoại lệ.',
+      'Phân tích độ phức tạp, chọn cấu trúc dữ liệu và tối ưu thời gian chạy cho các bài thi.',
     ],
     suitableFor: [
       'Học sinh THPT học chương trình Tin học Python.',
-      'Sinh viên và người đi làm muốn học Python bài bản.',
+      'Người mới muốn luyện thuật toán và tham gia thi lập trình bằng Python.',
     ],
     bannerTone: 'emerald',
     modules: [
