@@ -5,7 +5,8 @@ on:
     branches: [main]
     paths:
       - 'supabase/migrations/20261114033000_learner_profiles_rls.sql'
-      - 'tests/sql/**'\n      - 'tests/integration/learner_profiles_postgrest.mjs'
+      - 'tests/sql/**'
+      - 'tests/integration/learner_profiles_postgrest.mjs'
       - '.github/workflows/learner-profiles-rls.yml'
 
 permissions:
@@ -51,7 +52,10 @@ jobs:
           sudo apt-get -q update
           sudo apt-get -qy install postgresql-client
 
-      - name: Syntax-check manual HTTP/JWT integration script (no credentials)\n        run: node --check tests/integration/learner_profiles_postgrest.mjs\n\n      - name: Bootstrap isolated Auth-role fixture
+      - name: Syntax-check manual HTTP/JWT integration script (no credentials)
+        run: node --check tests/integration/learner_profiles_postgrest.mjs
+
+      - name: Bootstrap isolated Auth-role fixture
         run: psql -X -v ON_ERROR_STOP=1 -f tests/sql/learner_profiles_ci_bootstrap.sql
 
       - name: Apply exact learner_profiles migration
