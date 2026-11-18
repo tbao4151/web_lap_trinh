@@ -1,5 +1,7 @@
 # web_lap_trinh — UI agent instructions
 
+> **PRODUCT SCOPE OVERRIDE — 2026-11-18:** Read [docs/COMPETITIVE_PROGRAMMING_SCOPE.md](docs/COMPETITIVE_PROGRAMMING_SCOPE.md) first. AlgoAcademy is now exclusively a C++ and Python **competitive-programming** education platform (beginner → HSG/OI/ICPC). Legacy multi-discipline requirements below describe the existing demo only and do not authorize new C/Java or general IT courses. Preserve current UI until safely migrated and prefer secure backend work.
+
 This repository is the single source for AlgoAcademy, a Vietnamese multi-discipline EdTech platform.
 
 ## Read first
