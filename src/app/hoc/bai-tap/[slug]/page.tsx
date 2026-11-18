@@ -18,6 +18,7 @@ import {
   Columns2,
 } from 'lucide-react';
 import { LANGUAGE_META, ROUTES } from '@/config/brand';
+import { getCompetitiveLanguages, isCompetitiveLanguage } from '@/config/competitiveLanguages';
 import {
   DifficultyBadge,
   SubmissionStatusBadge,
@@ -72,8 +73,9 @@ export default function CodingLabPage({
     if (!problem) return;
     // Some exercises support only a subset of languages. Never display an
     // unsupported language or load an unrelated starter template.
-    if (!problem.supportedLanguages.includes(language)) {
-      setLanguage(problem.supportedLanguages[0]);
+    const supportedLanguages = getCompetitiveLanguages(problem.supportedLanguages);
+    if (!supportedLanguages.includes(language)) {
+      if (supportedLanguages[0]) setLanguage(supportedLanguages[0]);
       return;
     }
     const starter = problem.starterCode[language] ?? '';
@@ -116,9 +118,24 @@ export default function CodingLabPage({
     );
   }
 
-  // Only display demo submissions belonging to the current problem. Showing
-  // unrelated seed records misrepresents the result and confuses learners.
-  const displaySubmissions = problemService.getSampleSubmissions(state, problem.slug);
+  const availableLanguages = getCompetitiveLanguages(problem.supportedLanguages);
+  if (availableLanguages.length === 0) {
+    return (
+      <main id="main-content" className="mx-auto max-w-4xl px-4 py-16">
+        <EmptyState
+          title="Bài tập chưa hỗ trợ C++ hoặc Python"
+          description="Dữ liệu Demo cũ của bài này chưa được chuyển sang hai ngôn ngữ lập trình thi đấu."
+          actionLabel="Quay lại Ngân hàng bài tập"
+          actionHref={ROUTES.practiceBank}
+        />
+      </main>
+    );
+  }
+
+  // Show seeded submissions for the current problem in supported languages only.
+  const displaySubmissions = problemService
+    .getSampleSubmissions(state, problem.slug)
+    .filter((sub) => isCompetitiveLanguage(sub.language));
 
   const lineCount = Math.max(12, code.split('\n').length);
 
@@ -132,7 +149,7 @@ export default function CodingLabPage({
   };
 
   const handleLanguageSwitch = (nextLang: ProgrammingLanguage) => {
-    if (nextLang === language || !problem.supportedLanguages.includes(nextLang)) return;
+    if (nextLang === language || !isCompetitiveLanguage(nextLang) || !problem.supportedLanguages.includes(nextLang)) return;
     // Save current language draft automatically before switching so no work is ever lost
     saveCodeDraft(problem.slug, language, code);
     clearCopyFeedback();
@@ -239,7 +256,7 @@ export default function CodingLabPage({
         {/* Language Selector & Action Buttons */}
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-800">
-            {problem.supportedLanguages.map((lang) => (
+            {availableLanguages.map((lang) => (
               <button
                 key={lang}
                 type="button"

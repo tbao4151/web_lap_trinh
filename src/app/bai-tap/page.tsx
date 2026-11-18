@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, TerminalSquare, ArrowUpRight } from 'lucide-react';
-import { DOMAINS, ROUTES } from '@/config/brand';
+import { DOMAINS, LANGUAGE_META, ROUTES } from '@/config/brand';
+import { COMPETITIVE_LANGUAGES, getCompetitiveLanguages } from '@/config/competitiveLanguages';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { DifficultyBadge, LanguageBadge, ProblemSolveBadge } from '@/components/ui/Badges';
@@ -24,7 +25,7 @@ export default function PublicProblemBankPage() {
     difficulty,
     language,
     domainId,
-  });
+  }).filter((problem) => getCompetitiveLanguages(problem.supportedLanguages).length > 0);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 dark:bg-slate-950">
@@ -39,7 +40,7 @@ export default function PublicProblemBankPage() {
                 <span>Ngân hàng bài tập thuật toán & lập trình</span>
               </span>
               <h1 className="mt-2 text-2xl font-extrabold text-slate-900 sm:text-3xl dark:text-white">
-                Kho bài tập đa ngôn ngữ (C, C++, Python, Java)
+                Kho bài tập lập trình thi đấu C++ và Python
               </h1>
               <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
                 Mỗi bài tập đều có phân tích Subtask, giới hạn dữ liệu rõ ràng và tích hợp sẵn môi
@@ -105,10 +106,9 @@ export default function PublicProblemBankPage() {
               className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white"
             >
               <option value="all">Hỗ trợ mọi ngôn ngữ</option>
-              <option value="cpp">C++ (G++ C++20)</option>
-              <option value="python">Python 3</option>
-              <option value="c">C (GCC C17)</option>
-              <option value="java">Java 21</option>
+              {COMPETITIVE_LANGUAGES.map((lang) => (
+                <option key={lang} value={lang}>{LANGUAGE_META[lang].label}</option>
+              ))}
             </select>
           </div>
         </div>
@@ -180,7 +180,7 @@ export default function PublicProblemBankPage() {
                         </td>
                         <td className="px-4 py-3.5">
                           <div className="flex flex-wrap gap-1">
-                            {prob.supportedLanguages.map((l) => (
+                            {getCompetitiveLanguages(prob.supportedLanguages).map((l) => (
                               <LanguageBadge key={l} language={l} />
                             ))}
                           </div>
