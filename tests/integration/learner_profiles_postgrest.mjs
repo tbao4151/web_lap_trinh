@@ -19,7 +19,7 @@ assert.equal(url.pathname, '/', 'Supply only the project root URL');
 const expectedHost = required('SUPABASE_TEST_EXPECTED_HOST');
 assert.equal(url.hostname, expectedHost, 'Target host does not match the reviewed disposable project');
 assert.match(url.hostname, /^[a-z0-9-]+\\.supabase\\.co$/, 'Expected a Supabase project hostname');
-const apiKey = required('SUPABASE_TEST_ANON_KEY');
+// Use the legacy anon JWT key for an explicit anonymous Authorization header.\nconst apiKey = required('SUPABASE_TEST_ANON_KEY');\nassert.equal(apiKey.split('.').length, 3, 'Expected legacy JWT anon key (not a publishable key)');
 const tokenA = required('SUPABASE_TEST_JWT_A');
 const tokenB = required('SUPABASE_TEST_JWT_B');
 const decode = (token) => {
@@ -84,7 +84,7 @@ try {
   denied(await request(tokenB, 'POST', '', { user_id: a.sub, display_name: 'spoof' }), 'B insert A');
   assert.equal(rows(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'updated A' }), 'A update').length, 1);
 
-  ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
+  // B has no row yet: a rejected reassignment cannot be explained by duplicate PK.\n  denied(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub }), 'A ownership reassignment');\n\n  ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
   owned.add(b.sub);
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B read').length, 1);
   assert.equal(rows(await request(tokenA, 'GET', select(b.sub)), 'A read B').length, 0);
