@@ -137,7 +137,7 @@ export const COMPETITIVE_LEARNING_PATHS: LearningPath[] = [
     id: 'path-career',
     slug: 'du-bi-oi-icpc-nang-cao',
     title: 'Dự bị Olympic Tin học và ICPC (chưa đủ học liệu nâng cao)',
-    subtitle: 'Ôn nền tảng giải thuật bằng C++/Python qua bài đang có; cây, đồ thị nâng cao và contest thật sẽ triển khai sau.',
+    subtitle: 'Ôn nền tảng giải thuật bằng C++/Python qua bài đang có; chưa có đủ chuyên đề cây/đồ thị nâng cao và contest thật.',
     // Persisted demo activeGoal uses this legacy key. Display metadata below
     // overrides its old "software career" meaning without migrating localStorage.
     goal: 'career-cs',
