@@ -167,5 +167,42 @@ begin
   ) then raise exception 'A cannot update own profile'; end if;
 end $$;
 
+
+-- A PostgreSQL session using the authenticated DB role but without a user
+-- subject must NOT be treated as an authenticated learner. This simulates
+-- a missing/empty JWT subject; it does not verify JWT signatures.
+select set_config('request.jwt.claim.sub', '', true);
+do $missing_subject$
+begin
+  if exists (select 1 from public.learner_profiles) then
+    raise exception 'authenticated role without subject can read profiles';
+  end if;
+  begin
+    insert into public.learner_profiles (user_id, display_name)
+    values (current_setting('algoacademy.test_user_b')::uuid, 'No JWT subject');
+    raise exception 'authenticated role without subject inserted profile';
+  exception
+    when check_violation or insufficient_privilege then null;
+  end;
+  update public.learner_profiles set display_name = 'No JWT subject';
+  if found then raise exception 'authenticated role without subject updated a profile'; end if;
+  delete from public.learner_profiles;
+  if found then raise exception 'authenticated role without subject deleted a profile'; end if;
+end $missing_subject$;
+
+-- Owner A may delete their own profile; verify the row disappears.
+select set_config('request.jwt.claim.sub', :'test_user_a', true);
+delete from public.learner_profiles
+where user_id = :'test_user_a'::uuid;
+do $owner_delete$
+begin
+  if exists (
+    select 1 from public.learner_profiles
+    where user_id = current_setting('algoacademy.test_user_a')::uuid
+  ) then
+    raise exception 'owner A still sees profile after deletion';
+  end if;
+end $owner_delete$;
+
 rollback;
 -- Required additional gate: repeat via actual anon/A/B JWTs over PostgREST.
