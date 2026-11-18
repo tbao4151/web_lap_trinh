@@ -18,7 +18,7 @@ assert.equal(url.protocol, 'https:', 'HTTPS is required');
 assert.equal(url.pathname, '/', 'Supply only the project root URL');
 const expectedHost = required('SUPABASE_TEST_EXPECTED_HOST');
 assert.equal(url.hostname, expectedHost, 'Target host does not match the reviewed disposable project');
-assert.match(url.hostname, /^[a-z0-9-]+\\.supabase\\.co$/, 'Expected a Supabase project hostname');
+assert.match(url.hostname, /^[a-z0-9-]+\.supabase\.co$/, 'Expected a Supabase project hostname');
 // Use the legacy anon JWT key for an explicit anonymous Authorization header.
 const apiKey = required('SUPABASE_TEST_ANON_KEY');
 assert.equal(apiKey.split('.').length, 3, 'Expected legacy JWT anon key (not a publishable key)');
