@@ -1,6 +1,17 @@
 # Learner profiles migration: review and validation gate
 
-This document applies to `20261114033000_learner_profiles_rls.sql`. It is **not** evidence that the migration was applied or tested. Do not apply it to production until the checks below pass in a disposable Supabase project.
+This document applies to `20261114033000_learner_profiles_rls.sql`. **The migration is not applied to the AlgoAcademy Supabase project or to production.** PostgreSQL-only CI checks have passed on a disposable test container (below), but real Supabase Auth JWT/PostgREST validation is still required before production consideration.
+
+## CI verification: disposable PostgreSQL 17 (2026-11-18)
+- Workflow: `.github/workflows/learner-profiles-rls.yml`; [successful run #44266255557](https://github.com/tbao4151/web_lap_trinh/actions/runs/44266255557) for commit `0735686a335912c969fa463154ecb0714c7b372e`.
+- Bootstrap: `tests/sql/learner_profiles_ci_bootstrap.sql` creates **synthetic** `auth.users`, `anon`, `authenticated` and a minimal `auth.uid()` function inside a one-use PostgreSQL 17 container. Fixture user IDs are static throwaway UUIDs, not customer or real Supabase Auth records.
+- Execution: apply the **exact migration**, run `tests/sql/learner_profiles_structure.sql`, then `tests/sql/learner_profiles_behavior_psql.sql` with simulated JWT claim GUCs and PostgreSQL `SET LOCAL ROLE`. All steps passed in the linked run.
+- Covered: structure, grants, owner-only SELECT/INSERT/UPDATE/DELETE, anon denials, cross-account access restrictions, attempted ownership reassignment.
+- **Not covered:** authentic JWT signature validation, PostgREST requests, Supabase Auth sign-in/session lifecycle, production grants/function warning, the managed Supabase project's full schema/events. The fixture does **not** replace a disposable Supabase project.
+- CI automatically reruns for subsequent PR changes; check the latest workflow conclusion against the latest head SHA before any merge.
+
+## Remaining integration gate
+Use a disposable Supabase project with its actual Auth users and PostgREST endpoint. Validate `anon`, user A, and user B through actual signed JWTs; verify the FK cascade and collect redacted results. Do not write production data.
 
 ## Preconditions
 1. Use an isolated Supabase project with Auth schema and `anon` / `authenticated` roles. Confirm the target table does not already exist; the migration deliberately fails if it does.
