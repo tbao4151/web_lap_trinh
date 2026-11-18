@@ -56,6 +56,16 @@ Rollback is **destructive**: `DROP TABLE public.learner_profiles;`. Only use it 
 ## Merge gate
 Frontend CI and Vercel Preview do not exercise PostgreSQL policies. Merge only after recording disposable-project SQL and client-level RLS results in the PR, confirming the latest PR head and main SHAs, and resolving any concurrent edits.
 
+## Fresh read-only AlgoAcademy security audit (2026-11-18, 16:04 Asia/Ho_Chi_Minh)
+The linked **production** Supabase project was queried using catalog-only SELECTs; no SQL mutations, migrations, test users, or production deployments were performed.
+
+- Project status: `ACTIVE_HEALTHY`, PostgreSQL `17.11.0.019`.
+- `to_regclass('public.learner_profiles')` returned **NULL**. The PR migration has **not** been applied to this project.
+- `public.rls_auto_enable()`: owner `postgres`; `prosecdef = true` (`SECURITY DEFINER`); `proacl = NULL`.
+- Effective `EXECUTE` privilege: `PUBLIC = true`, `anon = true`, `authenticated = true`. This confirms the warning persists as of this audit; it does **not** by itself establish that a client can exploit the event-trigger function as an RPC.
+- Event trigger `ensure_rls` references `rls_auto_enable()` and has `evtenabled = 'O'` (enabled for origin/local sessions).
+- Do **not** revoke production privileges blindly: inspect function body/dependencies, test least-privilege revocation and event-trigger behavior on a disposable Supabase clone, then propose a separately reviewed migration. This PR remains blocked on genuine Auth JWT/PostgREST owner-isolation tests.
+
 ## Read-only production audit snapshot (2026-11-15; NOT a migration test)
 A read-only inspection of the linked AlgoAcademy Supabase project (PostgreSQL 17.11) found:
 - `public.rls_auto_enable()` is owned by `postgres`, returns `event_trigger`, uses `SECURITY DEFINER`, and sets `search_path=pg_catalog`.
