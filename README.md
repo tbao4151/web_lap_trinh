@@ -1,5 +1,7 @@
 # AlgoAcademy (`web_lap_trinh`)
 
+> **Định hướng mới (18/11/2026):** AlgoAcademy chỉ tập trung **lập trình thi đấu C++ và Python** từ nhập môn đến HSG/OI/ICPC. Nội dung C, Java và các môn CNTT tổng quát thuộc các website khác. Xem [phạm vi sản phẩm cập nhật](docs/COMPETITIVE_PROGRAMMING_SCOPE.md). Các mô tả đa lĩnh vực bên dưới chỉ phản ánh bản UI Demo hiện có, chưa phải chức năng đích.
+
 **AlgoAcademy** là nền tảng học tập đa trình độ và đa mảng kiến thức về Lập trình (C, C++, Python, Java), Cấu trúc dữ liệu & Thuật toán / Bồi dưỡng Học sinh giỏi, Công nghệ phần mềm (Git/GitHub) và Cơ sở dữ liệu & Hệ thống (SQL).
 
 > **Lưu ý phạm vi (UI/UX Stage):** Dự án hiện tại là **bản trình diễn giao diện người dùng (Production-Grade Frontend / UI Demo)** sử dụng dữ liệu mẫu chuẩn kiểu (typed mock seed data) và lưu trữ trạng thái trên trình duyệt (`localStorage`). Chưa kết nối máy chấm code (Judge Worker), cơ sở dữ liệu máy chủ hay cổng thanh toán thật.
