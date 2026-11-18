@@ -3,9 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Search, TerminalSquare, ArrowUpRight } from 'lucide-react';
-import { DOMAINS, ROUTES } from '@/config/brand';
+import { DOMAINS, LANGUAGE_META, ROUTES } from '@/config/brand';
 import { COMPETITIVE_LANGUAGES, getCompetitiveLanguages } from '@/config/competitiveLanguages';
-import { LANGUAGE_META } from '@/config/brand';
 import { PublicHeader } from '@/components/layout/PublicHeader';
 import { PublicFooter } from '@/components/layout/PublicFooter';
 import { DifficultyBadge, LanguageBadge, ProblemSolveBadge } from '@/components/ui/Badges';
