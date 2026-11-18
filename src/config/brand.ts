@@ -10,9 +10,9 @@ import type {
 export const BRAND_CONFIG = {
   name: 'AlgoAcademy',
   shortName: 'AA',
-  tagline: 'Nền tảng học lập trình, thuật toán và công nghệ thông tin đa trình độ',
+  tagline: 'Lập trình thi đấu C++ và Python từ nhập môn đến HSG/OI/ICPC',
   description:
-    'Học lý thuyết trực quan, thực hành code trong trình duyệt, theo dõi bản đồ năng lực theo từng kỹ năng và biên soạn học liệu chuẩn sư phạm.',
+    'Học thuật toán C++ và Python, luyện bài lập trình thi đấu và theo dõi năng lực theo từng chủ đề. Coding Lab hiện ở chế độ Demo, chưa chấm bài thật.',
   demoNotice:
     'Bản trình diễn giao diện (UI Demo) — Sử dụng dữ liệu minh họa và bộ nhớ trình duyệt. Chưa kết nối máy chấm code, thanh toán hoặc xác thực máy chủ.',
   version: '1.1.0-ui-demo',
@@ -73,7 +73,7 @@ export const DOMAINS: Domain[] = [
     id: 'lap-trinh',
     slug: 'lap-trinh',
     name: 'Lập trình cốt lõi',
-    description: 'Tư duy lập trình, cú pháp, quản lý bộ nhớ và hướng đối tượng với C, C++, Python, Java.',
+    description: 'Nền tảng C++ và Python cho lập trình thi đấu: nhập xuất, mảng, chuỗi, cấu trúc dữ liệu và tư duy giải thuật.',
     iconName: 'Code2',
     requiresCodeEditor: true,
   },
