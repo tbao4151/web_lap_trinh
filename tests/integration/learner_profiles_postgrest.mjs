@@ -81,7 +81,7 @@ try {
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'preflight B').length, 0);
   const anonRead = await request(null, 'GET', 'select=user_id');
   denied(anonRead, 'anon SELECT (table grants are intentionally revoked)');
-  denied(await request(null, 'POST', '', { user_id: a.sub, display_name: 'anon' }), 'anon INSERT');
+  // A broken anon INSERT policy could persist a row before the assertion fails.\n  // Register cleanup first so even a failed security assertion leaves no test data.\n  owned.add(a.sub);\n  denied(await request(null, 'POST', '', { user_id: a.sub, display_name: 'anon' }), 'anon INSERT');
   denied(await request(null, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'anon' }), 'anon UPDATE');
   denied(await request(null, 'DELETE', `user_id=eq.${a.sub}`), 'anon DELETE');
 
