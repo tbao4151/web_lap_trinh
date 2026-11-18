@@ -76,6 +76,8 @@ try {
   const anonRead = await request(null, 'GET', 'select=user_id');
   denied(anonRead, 'anon SELECT (table grants are intentionally revoked)');
   denied(await request(null, 'POST', '', { user_id: a.sub, display_name: 'anon' }), 'anon INSERT');
+  denied(await request(null, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'anon' }), 'anon UPDATE');
+  denied(await request(null, 'DELETE', `user_id=eq.${a.sub}`), 'anon DELETE');
 
   ok(await request(tokenA, 'POST', '', { user_id: a.sub, display_name: labelA }), 'A insert');
   owned.add(a.sub);
@@ -93,7 +95,15 @@ try {
   owned.add(b.sub);
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B read').length, 1);
   assert.equal(rows(await request(tokenA, 'GET', select(b.sub)), 'A read B').length, 0);
-  denied(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub }), 'A ownership reassignment');
+  // Once B's primary key exists, PostgreSQL may reject reassignment with
+  // either an RLS denial (403) or a unique-key conflict (409). Neither is success.
+  const occupiedReassignment = await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub });
+  assert(
+    [401, 403, 409].includes(occupiedReassignment.status),
+    `A ownership reassignment to occupied B: expected 401/403/409, got HTTP ${occupiedReassignment.status}`,
+  );
+  assert.equal(rows(await request(tokenA, 'GET', select(a.sub)), 'A retains own profile').length, 1);
+  assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B retains own profile').length, 1);
 
   assert.equal(rows(await request(tokenB, 'DELETE', `user_id=eq.${b.sub}`), 'B delete').length, 1);
   owned.delete(b.sub);
