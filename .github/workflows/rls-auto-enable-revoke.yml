@@ -1,0 +1,40 @@
+name: RLS auto-enable revoke regression
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261119235500_revoke_rls_auto_enable_execute.sql'
+      - 'tests/sql/rls_auto_enable_revoke_disposable.sql'
+      - '.github/workflows/rls-auto-enable-revoke.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  disposable-postgres:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: disposable_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d disposable_db"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify revocation preserves automatic RLS
+        env:
+          PGPASSWORD: postgres
+        run: |
+          psql -X -v ON_ERROR_STOP=1 \
+            -h 127.0.0.1 -p 5432 -U postgres -d disposable_db \
+            -f tests/sql/rls_auto_enable_revoke_disposable.sql
