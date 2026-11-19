@@ -59,7 +59,7 @@ BEGIN
   END IF;
   IF has_function_privilege('anon', 'public.rls_auto_enable()', 'EXECUTE')
     OR has_function_privilege('authenticated', 'public.rls_auto_enable()', 'EXECUTE')
-    OR has_function_privilege('PUBLIC', 'public.rls_auto_enable()', 'EXECUTE')
+    OR EXISTS (\n      SELECT 1 FROM pg_proc p, LATERAL aclexplode(coalesce(p.proacl, acldefault('f', p.proowner))) acl\n      WHERE p.oid = 'public.rls_auto_enable()'::regprocedure\n        AND acl.grantee = 0 AND acl.privilege_type = 'EXECUTE'\n    )
   THEN
     RAISE EXCEPTION 'Client/PUBLIC EXECUTE remains after migration';
   END IF;
