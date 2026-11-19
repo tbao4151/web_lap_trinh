@@ -35,3 +35,36 @@ order by identity_arguments;
 -- A possible least-privilege remediation, only AFTER verification, is to
 -- revoke EXECUTE from PUBLIC, anon, and authenticated on each exact signature.
 -- Do not blindly execute a REVOKE or alter SECURITY DEFINER in production.
+
+
+-- Dependency inventory: event triggers and ordinary table triggers that call
+-- any overload of public.rls_auto_enable. A missing row means no direct trigger
+-- reference was found; it does not prove the function is unused elsewhere.
+select
+  'event_trigger' as trigger_kind,
+  e.evtname as trigger_name,
+  e.evtevent as trigger_event,
+  e.evtenabled::text as enabled_mode,
+  null::text as relation_name,
+  e.evtfoid::regprocedure::text as called_function
+from pg_event_trigger e
+join pg_proc p on p.oid = e.evtfoid
+join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and p.proname = 'rls_auto_enable'
+union all
+select
+  'table_trigger' as trigger_kind,
+  t.tgname as trigger_name,
+  null::text as trigger_event,
+  t.tgenabled::text as enabled_mode,
+  t.tgrelid::regclass::text as relation_name,
+  t.tgfoid::regprocedure::text as called_function
+from pg_trigger t
+join pg_proc p on p.oid = t.tgfoid
+join pg_namespace n on n.oid = p.pronamespace
+where n.nspname = 'public' and p.proname = 'rls_auto_enable'
+  and not t.tgisinternal
+order by trigger_kind, trigger_name;
+
+-- Review pg_get_functiondef above and the trigger inventory together.
+-- This audit does not revoke privileges or prove that revocation is safe.
