@@ -1,5 +1,5 @@
 -- Run ONLY against a disposable PostgreSQL database after applying
--- supabase/migrations/20261119210000_competitive_topics_rls.sql.
+-- supabase/migrations/20261119213000_competitive_topics.sql.
 -- Requires a privileged test connection; all fixture changes roll back.
 BEGIN;
 DO $$
