@@ -1,0 +1,49 @@
+name: Competitive topics PostgreSQL RLS
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261119213000_competitive_topics.sql'
+      - 'tests/sql/competitive_topics_rls_disposable.sql'
+      - '.github/workflows/competitive-topics-rls.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  postgres-rls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: algoacademy_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d algoacademy_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: postgres
+      PGPASSWORD: postgres
+      PGDATABASE: algoacademy_test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bootstrap client roles in disposable database
+        run: |
+          psql -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE ROLE anon NOLOGIN;
+          CREATE ROLE authenticated NOLOGIN;
+          SQL
+      - name: Apply competitive topics migration
+        run: psql -v ON_ERROR_STOP=1 -f supabase/migrations/20261119213000_competitive_topics.sql
+      - name: Verify RLS and client read-only grants
+        run: psql -v ON_ERROR_STOP=1 -f tests/sql/competitive_topics_rls_disposable.sql
