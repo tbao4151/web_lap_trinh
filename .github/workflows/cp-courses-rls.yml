@@ -1,0 +1,45 @@
+name: CP course catalog PostgreSQL RLS regression
+
+on:
+  pull_request:
+    paths:
+      - 'supabase/migrations/20261120203000_cp_courses_readonly_rls.sql'
+      - 'tests/sql/cp_courses_rls_regression.sql'
+      - '.github/workflows/cp-courses-rls.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cp-courses-rls:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: cp_courses_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d cp_courses_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+      - name: Run disposable PostgreSQL RLS regression
+        env:
+          PGHOST: localhost
+          PGPORT: '5432'
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: cp_courses_ci
+        run: psql -X -v ON_ERROR_STOP=1 -f tests/sql/cp_courses_rls_regression.sql
