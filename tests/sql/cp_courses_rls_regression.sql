@@ -89,4 +89,47 @@ BEGIN
   EXCEPTION WHEN foreign_key_violation THEN NULL;
   END;
 END $$;
+
+-- Complete the client privilege matrix, not only the representative checks above.
+DO $
+DECLARE client_role text;
+DECLARE action text;
+BEGIN
+  FOREACH client_role IN ARRAY ARRAY['anon', 'authenticated'] LOOP
+    FOREACH action IN ARRAY ARRAY['INSERT', 'UPDATE', 'DELETE', 'TRUNCATE', 'REFERENCES', 'TRIGGER'] LOOP
+      IF has_table_privilege(client_role, 'public.cp_courses', action) THEN
+        RAISE EXCEPTION '% unexpectedly has % on cp_courses', client_role, action;
+      END IF;
+    END LOOP;
+    IF NOT has_table_privilege(client_role, 'public.cp_courses', 'SELECT') THEN
+      RAISE EXCEPTION '% cannot read published cp_courses', client_role;
+    END IF;
+  END LOOP;
+  IF has_table_privilege('PUBLIC', 'public.cp_courses', 'SELECT') THEN
+    RAISE EXCEPTION 'PUBLIC must not receive implicit catalog access';
+  END IF;
+END $;
+
+-- Assert invalid status, level and slug are rejected independently of language/FK.
+DO $
+BEGIN
+  BEGIN
+    INSERT INTO public.cp_courses (slug,title,language,level,status,author_id)
+    VALUES ('bad-status','Invalid status','cpp','basic','unlisted','11111111-1111-4111-8111-111111111111');
+    RAISE EXCEPTION 'invalid status accepted';
+  EXCEPTION WHEN check_violation THEN NULL;
+  END;
+  BEGIN
+    INSERT INTO public.cp_courses (slug,title,language,level,author_id)
+    VALUES ('bad-level','Invalid level','python','expert','11111111-1111-4111-8111-111111111111');
+    RAISE EXCEPTION 'invalid level accepted';
+  EXCEPTION WHEN check_violation THEN NULL;
+  END;
+  BEGIN
+    INSERT INTO public.cp_courses (slug,title,language,level,author_id)
+    VALUES ('Bad Slug','Invalid slug','cpp','basic','11111111-1111-4111-8111-111111111111');
+    RAISE EXCEPTION 'invalid slug accepted';
+  EXCEPTION WHEN check_violation THEN NULL;
+  END;
+END $;
 ROLLBACK;
