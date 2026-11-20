@@ -105,7 +105,12 @@ BEGIN
       RAISE EXCEPTION '% cannot read published cp_courses', client_role;
     END IF;
   END LOOP;
-  IF has_table_privilege('PUBLIC', 'public.cp_courses', 'SELECT') THEN
+  IF EXISTS (
+    SELECT 1 FROM pg_class c,
+      LATERAL aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) acl
+    WHERE c.oid = 'public.cp_courses'::regclass
+      AND acl.grantee = 0 AND acl.privilege_type = 'SELECT'
+  ) THEN
     RAISE EXCEPTION 'PUBLIC must not receive implicit catalog access';
   END IF;
 END $;
