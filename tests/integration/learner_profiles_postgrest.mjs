@@ -103,9 +103,16 @@ try {
   assert.equal(afterCrossUserWrites[0].display_name, labelA);
   denied(await request(tokenB, 'POST', '', { user_id: a.sub, display_name: 'spoof' }), 'B insert A');
   assert.equal(rows(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'updated A' }), 'A update').length, 1);
+  const updatedA = rows(await request(tokenA, 'GET', select(a.sub)), 'A persisted own update');
+  assert.equal(updatedA.length, 1);
+  assert.equal(updatedA[0].display_name, 'updated A');
 
   // B has no row yet: a rejected reassignment cannot be explained by duplicate PK.
   denied(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub }), 'A ownership reassignment');
+  // Verify both sides after rejection; a failed response alone does not prove
+  // that the primary key and row ownership remained unchanged.
+  assert.equal(rows(await request(tokenA, 'GET', select(a.sub)), 'A retained after rejected reassignment').length, 1);
+  assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B still absent after rejected reassignment').length, 0);
 
   owned.add(b.sub);
   ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
