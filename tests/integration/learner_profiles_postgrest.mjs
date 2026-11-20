@@ -114,7 +114,12 @@ try {
   assert.equal(rows(await request(tokenA, 'GET', select(a.sub)), 'A retained after rejected reassignment').length, 1);
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B still absent after rejected reassignment').length, 0);
 
+  // Test unauthorized INSERT before B's row exists: a duplicate-key error
+  // against an existing row would otherwise mask a broken WITH CHECK policy.
+  // Register B for cleanup before the request in case a broken policy inserts it.
   owned.add(b.sub);
+  denied(await request(tokenA, 'POST', '', { user_id: b.sub, display_name: 'spoof B' }), 'A insert B before B exists');
+  assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B absent after A insert attempt').length, 0);
   ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B read').length, 1);
   assert.equal(rows(await request(tokenA, 'GET', select(b.sub)), 'A read B').length, 0);
