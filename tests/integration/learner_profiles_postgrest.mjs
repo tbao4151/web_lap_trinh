@@ -118,6 +118,14 @@ try {
   ok(await request(tokenB, 'POST', '', { user_id: b.sub, display_name: labelB }), 'B insert');
   assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B read').length, 1);
   assert.equal(rows(await request(tokenA, 'GET', select(b.sub)), 'A read B').length, 0);
+  // Exercise the symmetric direction after B owns a real row, not just A's row.
+  assert.equal(rows(await request(tokenA, 'PATCH', `user_id=eq.${b.sub}`, { display_name: 'spoof B' }), 'A update B').length, 0);
+  assert.equal(rows(await request(tokenA, 'DELETE', `user_id=eq.${b.sub}`), 'A delete B').length, 0);
+  const bAfterCrossUserWrites = rows(await request(tokenB, 'GET', select(b.sub)), 'B unchanged after A writes');
+  assert.equal(bAfterCrossUserWrites.length, 1);
+  assert.equal(bAfterCrossUserWrites[0].display_name, labelB);
+  assert.equal(rows(await request(tokenB, 'PATCH', `user_id=eq.${b.sub}`, { display_name: 'updated B' }), 'B update').length, 1);
+  assert.equal(rows(await request(tokenB, 'GET', select(b.sub)), 'B persisted own update')[0].display_name, 'updated B');
   // Once B's primary key exists, PostgreSQL may reject reassignment with
   // either an RLS denial (403) or a unique-key conflict (409). Neither is success.
   const occupiedReassignment = await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { user_id: b.sub });
