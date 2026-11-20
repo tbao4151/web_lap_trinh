@@ -96,6 +96,11 @@ try {
   assert.equal(rows(await request(tokenB, 'GET', select(a.sub)), 'B read A').length, 0);
   assert.equal(rows(await request(tokenB, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'spoof' }), 'B update A').length, 0);
   assert.equal(rows(await request(tokenB, 'DELETE', `user_id=eq.${a.sub}`), 'B delete A').length, 0);
+  // A zero-row response alone is insufficient: verify B's denied mutations
+  // did not alter or remove A's profile before A performs its own update.
+  const afterCrossUserWrites = rows(await request(tokenA, 'GET', select(a.sub)), 'A unchanged after B writes');
+  assert.equal(afterCrossUserWrites.length, 1);
+  assert.equal(afterCrossUserWrites[0].display_name, labelA);
   denied(await request(tokenB, 'POST', '', { user_id: a.sub, display_name: 'spoof' }), 'B insert A');
   assert.equal(rows(await request(tokenA, 'PATCH', `user_id=eq.${a.sub}`, { display_name: 'updated A' }), 'A update').length, 1);
 
