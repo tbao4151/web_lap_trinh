@@ -84,18 +84,18 @@ export default function HomePage() {
             <div className="grid grid-cols-1 items-center gap-12 lg:grid-cols-12">
               <div className="lg:col-span-6">
                 <div className="flex flex-wrap items-center gap-2">
-                  <DemoBadge text="Không gian học tập & thực hành đa trình độ" />
+                  <DemoBadge text="Demo học lập trình thi đấu từ nhập môn đến OI/ICPC" />
                   <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-0.5 font-mono text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                    C · C++ · Python · Java · SQL · Git
+                    C++ · Python · HSG · OI · ICPC
                   </span>
                 </div>
 
                 <h1 className="mt-5 text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl sm:leading-[1.15] dark:text-white">
-                  Hiểu bản chất thuật toán qua trực quan hóa và thực hành đa ngôn ngữ
+                  Làm chủ thuật toán và tư duy lập trình thi đấu với C++ và Python
                 </h1>
 
                 <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg dark:text-slate-300">
-                  {BRAND_CONFIG.name} kết nối bài giảng tương tác từng bước, phòng thực hành Coding Lab 4 ngôn ngữ và không gian biên soạn dành cho giáo viên — thiết kế cho người mới bắt đầu từ số 0, học sinh phổ thông, đội tuyển HSG và người tự học CNTT.
+                  {BRAND_CONFIG.name} kết nối bài giảng thuật toán, trực quan hóa và Coding Lab Demo dành cho C++ và Python — từ người mới bắt đầu đến HSG trường, huyện, tỉnh, quốc gia, OI và ICPC. Chức năng chấm bài thực tế chưa được kết nối.
                 </p>
 
                 <div className="mt-7 flex flex-wrap items-center gap-3">
@@ -127,13 +127,13 @@ export default function HomePage() {
                     <div className="font-mono text-base font-bold text-slate-900 dark:text-white">
                       {state.courses.length} khóa mẫu
                     </div>
-                    <div>Từ Nhập môn C/C++ đến Quy hoạch động, SQL, Git</div>
+                    <div>Dữ liệu Demo cũ đang được chuyển dần sang C++ và Python</div>
                   </div>
                   <div>
                     <div className="font-mono text-base font-bold text-slate-900 dark:text-white">
                       {state.problems.length} bài tập seed
                     </div>
-                    <div>Có đầy đủ sample code C, C++, Python, Java</div>
+                    <div>Bài tập Demo; chưa có Judge Worker thực</div>
                   </div>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function HomePage() {
                     </div>
 
                     <div className="flex items-center gap-1" role="group" aria-label="Chọn ngôn ngữ xem thử">
-                      {(['cpp', 'python', 'java', 'c'] as ProgrammingLanguage[]).map((lang) => (
+                      {(['cpp', 'python'] as ProgrammingLanguage[]).map((lang) => (
                         <button
                           key={lang}
                           type="button"
