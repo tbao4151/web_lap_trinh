@@ -1,0 +1,72 @@
+name: Learner Profiles PostgreSQL RLS
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/20261114033000_learner_profiles_rls.sql'
+      - 'tests/sql/**'
+      - 'tests/integration/learner_profiles_postgrest.mjs'
+      - '.github/workflows/learner-profiles-rls.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: learner-profiles-rls-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  postgres-policy:
+    name: PostgreSQL 17 owner-only RLS (simulated JWT claims)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: disposable-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      PGPASSWORD: disposable-ci-only
+      PGHOST: 127.0.0.1
+      PGPORT: '5432'
+      PGDATABASE: postgres
+      PGUSER: postgres
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get -q update
+          sudo apt-get -qy install postgresql-client
+
+      - name: Syntax-check manual HTTP/JWT integration script (no credentials)
+        run: node --check tests/integration/learner_profiles_postgrest.mjs
+
+      - name: Bootstrap isolated Auth-role fixture
+        run: psql -X -v ON_ERROR_STOP=1 -f tests/sql/learner_profiles_ci_bootstrap.sql
+
+      - name: Apply exact learner_profiles migration
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261114033000_learner_profiles_rls.sql
+
+      - name: Verify structural RLS invariants and grants
+        run: psql -X -v ON_ERROR_STOP=1 -f tests/sql/learner_profiles_structure.sql
+
+      - name: Verify anon and two-owner behavior under PostgreSQL roles
+        run: |
+          psql -X -v ON_ERROR_STOP=1 \
+            -v test_user_a=00000000-0000-4000-8000-00000000000a \
+            -v test_user_b=00000000-0000-4000-8000-00000000000b \
+            -f tests/sql/learner_profiles_behavior_psql.sql
