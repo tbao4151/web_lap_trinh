@@ -91,7 +91,7 @@ BEGIN
 END $$;
 
 -- Complete the client privilege matrix, not only the representative checks above.
-DO $
+DO $$
 DECLARE client_role text;
 DECLARE action text;
 BEGIN
@@ -113,10 +113,10 @@ BEGIN
   ) THEN
     RAISE EXCEPTION 'PUBLIC must not receive implicit catalog access';
   END IF;
-END $;
+END $$;
 
 -- Assert invalid status, level and slug are rejected independently of language/FK.
-DO $
+DO $$
 BEGIN
   BEGIN
     INSERT INTO public.cp_courses (slug,title,language,level,status,author_id)
@@ -136,5 +136,5 @@ BEGIN
     RAISE EXCEPTION 'invalid slug accepted';
   EXCEPTION WHEN check_violation THEN NULL;
   END;
-END $;
+END $$;
 ROLLBACK;
